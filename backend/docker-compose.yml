@@ -1,0 +1,54 @@
+version: '3.1'
+
+services:
+  postgres_invoice:
+    container_name: invoice_db
+    image: postgres
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER_INVOICE}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_INVOICE}
+      POSTGRES_DB: ${POSTGRES_DB_INVOICE}
+      PGDATA: /data/postgres
+    volumes:
+      - dy-invoice:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - dy-invoice
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "${POSTGRES_DB_INVOICE}", "-U", "${POSTGRES_USER_INVOICE}" ]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+
+  app_dy-invoice:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - SPRING.JPA.DATABASE=POSTGRESQL
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_invoice:5432/${POSTGRES_DB_INVOICE}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER_INVOICE}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD_INVOICE}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+      - APP_JWTSECRET=${APP_JWTSECRET}
+      - APP_JWTEXPIRATIONMILLISECONDS=${APP_JWTEXPIRATIONMILLISECONDS}
+    ports:
+      - "3081:3081"
+    networks:
+      - dy-invoice
+    depends_on:
+      postgres_invoice:
+        condition: service_healthy
+
+networks:
+  dy-invoice:
+    driver: bridge
+
+volumes:
+  dy-invoice:

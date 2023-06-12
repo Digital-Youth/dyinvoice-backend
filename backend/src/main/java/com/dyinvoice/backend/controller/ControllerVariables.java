@@ -14,9 +14,4 @@ public interface ControllerVariables {
     String[] staffAntPatterns = new String[]{
             "/admin/**"
     };
-
-    String ADMIN_ROLE_NAME = "admin";
-    String USER_ROLE_NAME = "user";
-    String STAFF_ROLE_NAME = "staff";
-    String ROLE_PREFIX = "ROLE_";
 }

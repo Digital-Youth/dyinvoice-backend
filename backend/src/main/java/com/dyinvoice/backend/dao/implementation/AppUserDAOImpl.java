@@ -2,9 +2,12 @@ package com.dyinvoice.backend.dao.implementation;
 
 import com.dyinvoice.backend.dao.AppUserDAO;
 import com.dyinvoice.backend.exception.ExceptionType;
+import com.dyinvoice.backend.exception.InvoiceApiException;
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.model.entity.AppUser;
+import com.dyinvoice.backend.model.entity.EntitiesRoleName;
 import com.dyinvoice.backend.model.entity.Entreprise;
+import com.dyinvoice.backend.model.entity.Role;
 import com.dyinvoice.backend.model.form.LoginForm;
 import com.dyinvoice.backend.model.form.RegisterForm;
 import com.dyinvoice.backend.model.view.AppUserView;
@@ -14,6 +17,7 @@ import com.dyinvoice.backend.repository.RoleRepository;
 import com.dyinvoice.backend.security.JwtTokenProvider;
 import com.dyinvoice.backend.utils.EntityToViewConverter;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,7 +25,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 
 @AllArgsConstructor
@@ -78,32 +84,54 @@ public class AppUserDAOImpl implements AppUserDAO {
     }
 
     @Override
-    public String register(AppUser appUser,  RegisterForm registerForm) {
-        try {
+    public String register(AppUser appUser) {
 
+                // Check if the user already exists
+                AppUser existingUser = appUserRepository.findByEmail(appUser.getEmail());
+                if (existingUser != null) {
+                    throw new InvoiceApiException(HttpStatus.BAD_REQUEST, "User with this email already exists");
+                }
 
-        }catch (Exception e) {
+                appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
 
-        }
-        return null;
+                // Create the company
+                Entreprise company = createEntreprise(appUser);
+                appUser.setEntreprise(company);
+
+                // Assign roles to the user
+                Set<Role> roles = new HashSet<>();
+                Optional<Role> userRoleOptional = roleRepository.findByName(EntitiesRoleName.ROLE_ADMIN);
+                if (userRoleOptional.isEmpty()) {
+                    throw new InvoiceApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Admin role not found");
+                }
+                roles.add(userRoleOptional.get());
+
+                appUser.setRoles(roles);
+                appUserRepository.save(appUser);
+
+                return "User Created successfully";
+
     }
+
 
     public Entreprise createEntreprise(AppUser appUser) {
 
         //Create a Company for a new User
         Entreprise company = new Entreprise();
-        company.setName(company.getName());
-        company.setAddress(company.getAddress());
+
+        Entreprise appUserCompany =  appUser.getEntreprise();
+
+        if(appUserCompany == null) {
+            throw new IllegalArgumentException("User must have a company");
+        }
+
+        company.setName(appUserCompany.getName());
+        company.setSiret(appUserCompany.getSiret());
         company.setAppUser(appUser);
 
         company = enterpriseRepository.save(company);
 
         return company;
-    }
-
-    @Override
-    public AppUser createAppUser(AppUser appUser) throws ResourceNotFoundException {
-        return null;
     }
 
     @Override

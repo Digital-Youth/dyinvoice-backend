@@ -11,6 +11,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Optional;
+
 
 @AllArgsConstructor
 @Configuration
@@ -26,24 +28,29 @@ public class LoadDataBase {
             log.info("Init database check ");
             log.info("Create Roles ");
 
-            Role admin = roleRepository.findByName(EntitiesRoleName.ROLE_ADMIN);
-            if(admin == null){
-                admin = new Role(0, EntitiesRoleName.ROLE_ADMIN, "admin");
-                roleRepository.save(admin);
+            Optional<Role> admin = roleRepository.findByName(EntitiesRoleName.ROLE_ADMIN);
+            if(admin.isEmpty()){
+                Role adminRole = new Role();
+                adminRole.setName(EntitiesRoleName.ROLE_ADMIN);
+                adminRole.setShortName("admin");
+                roleRepository.save(adminRole);
             }
 
-            Role user = roleRepository.findByName(EntitiesRoleName.ROLE_USER);
-            if(user == null){
-                user = new Role(0, EntitiesRoleName.ROLE_USER, "user");
-                roleRepository.save(user);
+            Optional<Role> user = roleRepository.findByName(EntitiesRoleName.ROLE_USER);
+            if(user.isEmpty()){
+                Role userRole = new Role();
+                userRole.setName(EntitiesRoleName.ROLE_USER);
+                userRole.setShortName("user");
+                roleRepository.save(userRole);
             }
 
-            Role superAdmin = roleRepository.findByName(EntitiesRoleName.ROLE_SUPER_ADMIN);
-            if(superAdmin == null) {
-                superAdmin = new Role(0, EntitiesRoleName.ROLE_SUPER_ADMIN, "Super Admin");
-                roleRepository.save(superAdmin);
+            Optional<Role> superAdmin = roleRepository.findByName(EntitiesRoleName.ROLE_SUPER_ADMIN);
+            if(superAdmin.isEmpty()){
+                Role superAdminRole = new Role();
+                superAdminRole.setName(EntitiesRoleName.ROLE_SUPER_ADMIN);
+                superAdminRole.setShortName("superadmin");
+                roleRepository.save(superAdminRole);
             }
-
             log.info("End");
 
 

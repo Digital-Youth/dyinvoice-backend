@@ -15,11 +15,9 @@ public interface AppUserDAO {
 
     String login(LoginForm loginForm);
 
-    String register(AppUser appUser, RegisterForm registerForm);
+    String register(AppUser appUser);
 
     AppUser getAppUser(AppUser appUser) throws ResourceNotFoundException;
-
-    AppUser createAppUser(AppUser appUser) throws ResourceNotFoundException;
 
     AppUser updateAppUser(AppUser appUser) throws ResourceNotFoundException;
 

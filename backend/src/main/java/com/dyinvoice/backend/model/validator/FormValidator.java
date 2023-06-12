@@ -2,6 +2,7 @@ package com.dyinvoice.backend.model.validator;
 
 import com.dyinvoice.backend.exception.ExceptionType;
 import com.dyinvoice.backend.model.form.AppUserForm;
+import com.dyinvoice.backend.model.form.RegisterForm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,24 @@ public class FormValidator {
         // required fields
         if (!Optional.ofNullable(form.getId()).isPresent()) {
             errorList.add(ExceptionType.ERROR_MSG_USER_ID_REQUIRED);
+        }
+
+        return errorList;
+    }
+
+    public static List<String> validateRegisterForm(RegisterForm form) {
+        List<String> errorList = new ArrayList<>();
+
+        if(form.getEmail() == null || !form.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            errorList.add("Invalid or null email.");
+        }
+
+        if(form.getPassword() == null || !form.getPassword().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")) {
+            errorList.add("Password must be at least 8 characters long and contain at least one number, one uppercase letter, and one special character.");
+        }
+
+        if(form.getPhoneNumber() == null || !form.getPhoneNumber().matches("\\d{10}")) {
+            errorList.add("Invalid or null phone number.");
         }
 
         return errorList;

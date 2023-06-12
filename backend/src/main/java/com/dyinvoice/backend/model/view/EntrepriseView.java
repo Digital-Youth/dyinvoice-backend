@@ -1,5 +1,6 @@
 package com.dyinvoice.backend.model.view;
 
+import com.dyinvoice.backend.model.entity.AppUser;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -19,6 +20,8 @@ public class EntrepriseView {
     private String siret;
 
     private String formeJuridique;
+
+    private AppUser appUser;
 
     private Timestamp createdAt;
 

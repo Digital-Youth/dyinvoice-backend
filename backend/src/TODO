@@ -3,3 +3,4 @@ TODO: Create all concerning the user in the AppUserDAO
 
        * The Authentication User
        * The Register User
+       * Change the securityConfig file and change the Role Name and affect the EntitiesRoleName

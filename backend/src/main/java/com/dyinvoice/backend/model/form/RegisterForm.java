@@ -32,6 +32,12 @@ public class RegisterForm {
     @ApiModelProperty(value = "AppUser password.")
     private String password;
 
-    @ApiModelProperty(value = "AppUser Company")
-    private Entreprise entreprise;
+    // Entreprise fields
+    @ApiModelProperty(value = "AppUser Company Name.")
+    private String entrepriseName;
+
+    @ApiModelProperty(value = "AppUser Company Siret.")
+    private String siret;
+
+
 }

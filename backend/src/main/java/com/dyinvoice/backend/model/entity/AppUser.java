@@ -12,7 +12,7 @@ public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String firstName;
 
@@ -23,9 +23,6 @@ public class AppUser {
     private String phoneNumber;
 
     private String password;
-
-    @OneToOne
-    private Entreprise entreprise;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",

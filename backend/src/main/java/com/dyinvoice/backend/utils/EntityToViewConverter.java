@@ -23,7 +23,6 @@ public class EntityToViewConverter {
         view.setFirstName(savedAppUser.getFirstName());
         view.setLastName(savedAppUser.getLastName());
         view.setPhoneNumber(savedAppUser.getPhoneNumber());
-        view.setEntreprise(savedAppUser.getEntreprise());
         return view;
     }
 }

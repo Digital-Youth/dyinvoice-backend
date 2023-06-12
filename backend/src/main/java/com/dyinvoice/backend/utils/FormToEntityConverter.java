@@ -28,10 +28,6 @@ public class FormToEntityConverter {
             appUser.setPhoneNumber(appUserForm.getPhoneNumber());
         }
 
-        if(appUserForm.getEntreprise() != null){
-            appUser.setEntreprise(appUserForm.getEntreprise());
-        }
-
 
         return appUser;
 

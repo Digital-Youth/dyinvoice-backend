@@ -20,7 +20,7 @@ public class Client {
 
     private String phoneNumber;
 
-    private String siret_siren;
+    private String siret;
 
     private String address;
 

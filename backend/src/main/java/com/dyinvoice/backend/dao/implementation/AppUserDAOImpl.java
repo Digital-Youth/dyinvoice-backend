@@ -8,8 +8,6 @@ import com.dyinvoice.backend.model.entity.AppUser;
 import com.dyinvoice.backend.model.entity.EntitiesRoleName;
 import com.dyinvoice.backend.model.entity.Entreprise;
 import com.dyinvoice.backend.model.entity.Role;
-import com.dyinvoice.backend.model.form.LoginForm;
-import com.dyinvoice.backend.model.form.RegisterForm;
 import com.dyinvoice.backend.model.view.AppUserView;
 import com.dyinvoice.backend.repository.AppUserRepository;
 import com.dyinvoice.backend.repository.EntrepriseRepository;
@@ -50,6 +48,16 @@ public class AppUserDAOImpl implements AppUserDAO {
     }
 
     @Override
+    public AppUser getAppUserByEmail(String email) {
+        return appUserRepository.findByEmail(email);
+    }
+
+    @Override
+    public AppUser getAppUserById(Long id) {
+        return appUserRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public AppUserView getAppUserInfo(AppUser appUser) throws ResourceNotFoundException {
         return EntityToViewConverter.convertEntityToAppUserView(getAppUser(appUser));
     }
@@ -73,14 +81,12 @@ public class AppUserDAOImpl implements AppUserDAO {
     }
 
     @Override
-    public String login(LoginForm loginForm) {
+    public String login(AppUser appUser) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginForm.getEmail(), loginForm.getPassword()));
+                appUser.getEmail(), appUser.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String token = jwtTokenProvider.generateToken(authentication);
-
-        return token;
+        return jwtTokenProvider.generateToken(authentication);
     }
 
     @Override
@@ -90,6 +96,17 @@ public class AppUserDAOImpl implements AppUserDAO {
                 AppUser existingUser = appUserRepository.findByEmail(appUser.getEmail());
                 if (existingUser != null) {
                     throw new InvoiceApiException(HttpStatus.BAD_REQUEST, "User with this email already exists");
+                }
+
+                existingUser = appUserRepository.findByPhoneNumber(appUser.getPhoneNumber());
+                if (existingUser != null) {
+                    throw new InvoiceApiException(HttpStatus.BAD_REQUEST, "User with this phone number already exists");
+                }
+
+                // Check if a company with this SIRET already exists
+                Entreprise existingCompany = enterpriseRepository.findBySiret(appUser.getEntreprise().getSiret());
+                if (existingCompany != null) {
+                    throw new InvoiceApiException(HttpStatus.BAD_REQUEST, "Company with this SIRET already exists");
                 }
 
                 appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
@@ -114,6 +131,7 @@ public class AppUserDAOImpl implements AppUserDAO {
     }
 
 
+
     public Entreprise createEntreprise(AppUser appUser) {
 
         //Create a Company for a new User
@@ -126,6 +144,7 @@ public class AppUserDAOImpl implements AppUserDAO {
         }
 
         company.setName(appUserCompany.getName());
+
         company.setSiret(appUserCompany.getSiret());
         company.setAppUser(appUser);
 

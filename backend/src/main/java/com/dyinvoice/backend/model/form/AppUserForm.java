@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class AppUserForm {
 
     @ApiModelProperty(value = "AppUser ID.", required = true)
-    private long id;
+    private Long id;
 
     @ApiModelProperty(value = "AppUser firstname.")
     private String firstName;

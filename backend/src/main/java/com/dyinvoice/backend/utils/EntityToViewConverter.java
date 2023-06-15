@@ -2,16 +2,16 @@ package com.dyinvoice.backend.utils;
 
 import com.dyinvoice.backend.model.entity.AppUser;
 import com.dyinvoice.backend.model.view.AppUserView;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.convert.EntityConverter;
 
-import java.util.logging.Logger;
 
 public class EntityToViewConverter {
 
 
 
-    private static final Logger log = (Logger) LoggerFactory.getLogger(EntityConverter.class);
+    private static final Logger logger = LoggerFactory.getLogger(EntityToViewConverter.class);
+
 
     public static AppUserView convertEntityToAppUserView(AppUser savedAppUser) {
 

@@ -3,6 +3,7 @@ package com.dyinvoice.backend.utils;
 import com.dyinvoice.backend.model.entity.AppUser;
 import com.dyinvoice.backend.model.entity.Entreprise;
 import com.dyinvoice.backend.model.form.AppUserForm;
+import com.dyinvoice.backend.model.form.LoginForm;
 import com.dyinvoice.backend.model.form.RegisterForm;
 
 
@@ -50,6 +51,15 @@ public class FormToEntityConverter {
         entreprise.setSiret(registerForm.getSiret());
 
         appUser.setEntreprise(entreprise);
+
+        return appUser;
+    }
+
+    public static AppUser convertLoginFormToAppUser(LoginForm loginForm) {
+        AppUser appUser = new AppUser();
+
+        appUser.setEmail(loginForm.getEmail());
+        appUser.setPassword(loginForm.getPassword());
 
         return appUser;
     }

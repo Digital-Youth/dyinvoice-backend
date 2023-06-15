@@ -11,9 +11,13 @@ public interface AppUserDAO {
 
     boolean isUserExist(AppUser appUser);
 
+    AppUser getAppUserByEmail(String email);
+
+    AppUser getAppUserById(Long id);
+
     AppUserView getAppUserInfo(AppUser appUser) throws ResourceNotFoundException;
 
-    String login(LoginForm loginForm);
+    String login(AppUser AppUser) throws ResourceNotFoundException;
 
     String register(AppUser appUser);
 

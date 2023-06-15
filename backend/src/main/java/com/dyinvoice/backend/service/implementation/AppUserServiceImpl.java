@@ -5,6 +5,7 @@ import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
 import com.dyinvoice.backend.model.entity.AppUser;
 import com.dyinvoice.backend.model.form.AppUserForm;
+import com.dyinvoice.backend.model.form.LoginForm;
 import com.dyinvoice.backend.model.form.RegisterForm;
 import com.dyinvoice.backend.model.validator.FormValidator;
 import com.dyinvoice.backend.model.view.AppUserView;
@@ -29,14 +30,21 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public AppUserView getAppUserInfo(AppUserForm form) throws ValidationException, ResourceNotFoundException {
-
         List<String> errorList = FormValidator.validateAppUserReadForm(form);
         if(errorList.size() > 0) {
             throw new ValidationException(FormValidator.getErrorMessages(errorList));
         }
 
-        return appUserDAO.getAppUserInfo(FormToEntityConverter.convertFormToAppUser(form));
+        AppUser appUser;
+        if (form.getId() != null) {
+            appUser = appUserDAO.getAppUserById(form.getId());
+        } else {
+            appUser = appUserDAO.getAppUserByEmail(form.getEmail());
+        }
+
+        return appUserDAO.getAppUserInfo(appUser);
     }
+
 
     @Override
     public AppUser registerUser(RegisterForm registerForm) throws ValidationException, ResourceNotFoundException {
@@ -51,6 +59,20 @@ public class AppUserServiceImpl implements AppUserService {
         return appUser;
     }
 
+    @Override
+    public String loginUser(LoginForm loginForm) throws ValidationException, ResourceNotFoundException {
+        List<String> errorList = FormValidator.validateLoginForm(loginForm);
+        if(errorList.size() > 0) {
+            throw new ValidationException(FormValidator.getErrorMessages(errorList));
+        }
+
+        AppUser appUser = new AppUser();
+        appUser.setEmail(loginForm.getEmail());
+        appUser.setPassword(loginForm.getPassword());
+
+        // Return the JWT token after successful authentication
+        return appUserDAO.login(appUser);
+    }
 
 
 }

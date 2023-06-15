@@ -2,6 +2,7 @@ package com.dyinvoice.backend.security;
 
 
 import com.dyinvoice.backend.controller.ControllerVariables;
+import com.dyinvoice.backend.model.entity.EntitiesRoleName;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -62,18 +63,24 @@ public class SecurityConfig {
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 http.authorizeRequests()
-                    .antMatchers(HttpMethod.GET, "/api/**").permitAll();
+                    .antMatchers(HttpMethod.GET, ControllerVariables.userAntPatterns).permitAll();
 
+        http.authorizeRequests()
+                        .antMatchers(HttpMethod.POST, ControllerVariables.userAntPatterns).permitAll();
         http.authorizeRequests()
                     .antMatchers(ControllerVariables.devAntPatterns).permitAll();
 
         http.authorizeRequests()
                 .antMatchers(ControllerVariables.userAntPatterns)
-                .hasAnyRole(new String[]{ControllerVariables.USER_ROLE_NAME, ControllerVariables.STAFF_ROLE_NAME, ControllerVariables.ADMIN_ROLE_NAME});
+                .hasAnyRole(new String[]{EntitiesRoleName.ROLE_USER, EntitiesRoleName.ROLE_ADMIN, EntitiesRoleName.ROLE_SUPER_ADMIN});
 
         http.authorizeRequests()
                 .antMatchers(ControllerVariables.staffAntPatterns)
-                .hasAnyRole(new String[]{ControllerVariables.STAFF_ROLE_NAME, ControllerVariables.ADMIN_ROLE_NAME});
+                .hasAnyRole(new String[]{EntitiesRoleName.ROLE_USER, EntitiesRoleName.ROLE_ADMIN});
+
+        http.authorizeRequests()
+                .anyRequest()
+                .authenticated();
 
         return http.build();
     }

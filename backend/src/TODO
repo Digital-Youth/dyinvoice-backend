@@ -1,0 +1,16 @@
+
+TODO: Create all concerning the user in the AppUserDAO
+
+       * The Authentication User
+       * The Register User
+       * Change the securityConfig file and change the Role Name and affect the EntitiesRoleName
+
+
+TODO: Verification, validation & problems
+
+       * Set up Sirets/Siren checks
+       * Set up phone number verification
+       * Set up email verification
+       * Implement Siret type validation
+       * Condense register method in AppUserDAOImpl
+       * Solve the problem of incrementing to m=n+2 when automatically creating a company in the Company table.

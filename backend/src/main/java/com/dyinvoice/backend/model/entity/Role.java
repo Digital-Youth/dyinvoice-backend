@@ -7,8 +7,6 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Role {

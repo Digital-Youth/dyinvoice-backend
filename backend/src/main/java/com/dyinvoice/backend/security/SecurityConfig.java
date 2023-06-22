@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -72,11 +73,11 @@ public class SecurityConfig {
 
         http.authorizeRequests()
                 .antMatchers(ControllerVariables.userAntPatterns)
-                .hasAnyRole(new String[]{EntitiesRoleName.ROLE_USER, EntitiesRoleName.ROLE_ADMIN, EntitiesRoleName.ROLE_SUPER_ADMIN});
+                .hasAnyRole(new String[]{EntitiesRoleName.ROLE_STAFF, EntitiesRoleName.ROLE_ADMIN, EntitiesRoleName.ROLE_SUPER_ADMIN});
 
         http.authorizeRequests()
                 .antMatchers(ControllerVariables.staffAntPatterns)
-                .hasAnyRole(new String[]{EntitiesRoleName.ROLE_USER, EntitiesRoleName.ROLE_ADMIN});
+                .hasAnyRole(new String[]{EntitiesRoleName.ROLE_STAFF, EntitiesRoleName.ROLE_ADMIN});
 
         http.authorizeRequests()
                 .anyRequest()

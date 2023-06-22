@@ -16,5 +16,7 @@ public class AppUserView {
 
     private String phoneNumber;
 
+    private String entreprise;
+
 
 }

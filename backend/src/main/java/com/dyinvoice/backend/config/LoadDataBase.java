@@ -36,12 +36,12 @@ public class LoadDataBase {
                 roleRepository.save(adminRole);
             }
 
-            Optional<Role> user = roleRepository.findByName(EntitiesRoleName.ROLE_USER);
-            if(user.isEmpty()){
-                Role userRole = new Role();
-                userRole.setName(EntitiesRoleName.ROLE_USER);
-                userRole.setShortName("user");
-                roleRepository.save(userRole);
+            Optional<Role> staff =  roleRepository.findByName(EntitiesRoleName.ROLE_STAFF);
+            if(staff.isEmpty()){
+                Role staffRole = new Role();
+                staffRole.setName(EntitiesRoleName.ROLE_STAFF);
+                staffRole.setShortName("staff");
+                roleRepository.save(staffRole);
             }
 
             Optional<Role> superAdmin = roleRepository.findByName(EntitiesRoleName.ROLE_SUPER_ADMIN);
@@ -51,6 +51,7 @@ public class LoadDataBase {
                 superAdminRole.setShortName("superadmin");
                 roleRepository.save(superAdminRole);
             }
+
             log.info("End");
 
 

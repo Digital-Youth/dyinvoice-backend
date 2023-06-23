@@ -36,6 +36,7 @@ public class FormValidator {
             errorList.add("Invalid or null phone number.");
         }
 
+
         return errorList;
     }
 
@@ -52,6 +53,28 @@ public class FormValidator {
 
         return errorList;
     }
+
+    // This is the method that we added
+    public static List<String> validateAppUserForm(AppUserForm form) {
+        List<String> errorList = new ArrayList<>();
+
+        if(form.getId() == null) {
+            errorList.add("User ID is required for updating user");
+        }
+
+        if(form.getEmail() != null && !form.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            errorList.add("Invalid email.");
+        }
+
+        if(form.getPhoneNumber() == null || !form.getPhoneNumber().matches("\\d{10}")) {
+            errorList.add("Invalid or null phone number.");
+        }
+
+
+
+        return errorList;
+    }
+
 
 
     public static String getErrorMessages(List<String> errorList) {

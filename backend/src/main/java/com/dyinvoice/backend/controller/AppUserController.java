@@ -109,4 +109,21 @@ public class AppUserController {
         return ResponseEntity.ok(response);
     }
 
+    @ApiOperation(value = "Update User.", response = AppUserView.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Validation Exception"),
+            @ApiResponse(code = 404, message = "Resource Not Found Exception"),
+            @ApiResponse(code = 500, message = "Internal Exception")
+    })
+    @PutMapping(value = "/{appUserId}")
+    public ResponseEntity<AppUser> updateUser(@PathVariable("appUserId") final String appUserId,
+                                                  @Valid @RequestBody AppUserForm form)
+            throws ValidationException, ResourceNotFoundException {
+        form.setId(Long.parseLong(appUserId));
+        AppUser updatedUser = appUserService.updateAppUser(form);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
+    }
+
+
 }

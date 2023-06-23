@@ -92,69 +92,77 @@ public class AppUserDAOImpl implements AppUserDAO {
     @Override
     public String register(AppUser appUser) {
 
-                // Check if the user already exists
-                AppUser existingUser = appUserRepository.findByEmail(appUser.getEmail());
-                if (existingUser != null) {
-                    throw new InvoiceApiException(HttpStatus.BAD_REQUEST, "User with this email already exists");
-                }
-
-                existingUser = appUserRepository.findByPhoneNumber(appUser.getPhoneNumber());
-                if (existingUser != null) {
-                    throw new InvoiceApiException(HttpStatus.BAD_REQUEST, "User with this phone number already exists");
-                }
-
-                // Check if a company with this SIRET already exists
-                Entreprise existingCompany = enterpriseRepository.findBySiret(appUser.getEntreprise().getSiret());
-                if (existingCompany != null) {
-                    throw new InvoiceApiException(HttpStatus.BAD_REQUEST, "Company with this SIRET already exists");
-                }
-
-                appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
-
-                // Create the company
-                Entreprise company = createEntreprise(appUser);
-                appUser.setEntreprise(company);
-
-                // Assign roles to the user
-                Set<Role> roles = new HashSet<>();
-                Optional<Role> userRoleOptional = roleRepository.findByName(EntitiesRoleName.ROLE_ADMIN);
-                if (userRoleOptional.isEmpty()) {
-                    throw new InvoiceApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Admin role not found");
-                }
-                roles.add(userRoleOptional.get());
-
-                appUser.setRoles(roles);
-                appUserRepository.save(appUser);
-
-                return "User Created successfully";
-
-    }
-
-
-
-    public Entreprise createEntreprise(AppUser appUser) {
-
-        //Create a Company for a new User
-        Entreprise company = new Entreprise();
-
-        Entreprise appUserCompany =  appUser.getEntreprise();
-
-        if(appUserCompany == null) {
-            throw new IllegalArgumentException("User must have a company");
+        // Check if the user already exists
+        AppUser existingUser = appUserRepository.findByEmail(appUser.getEmail());
+        if (existingUser != null) {
+            throw new InvoiceApiException("User with this email already exists");
         }
 
-        company.setName(appUserCompany.getName());
+        existingUser = appUserRepository.findByPhoneNumber(appUser.getPhoneNumber());
+        if (existingUser != null) {
+            throw new InvoiceApiException( "User with this phone number already exists");
+        }
 
-        company.setSiret(appUserCompany.getSiret());
+        // Check if a company with this SIRET already exists
+        Entreprise existingCompany = enterpriseRepository.findBySiret(appUser.getEntreprise().getSiret());
+        if (existingCompany != null) {
+            throw new InvoiceApiException( "Company with this SIRET already exists");
+        }
+
+        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
+
+        // Assign roles to the user
+        Set<Role> roles = new HashSet<>();
+        Optional<Role> userRoleOptional = roleRepository.findByName(EntitiesRoleName.ROLE_ADMIN);
+        if (userRoleOptional.isEmpty()) {
+            throw new InvoiceApiException( "Admin role not found");
+        }
+        roles.add(userRoleOptional.get());
+
+        appUser.setRoles(roles);
+
+        // Create the company
+        Entreprise company = new Entreprise();
+        company.setName(appUser.getEntreprise().getName());
+        company.setSiret(appUser.getEntreprise().getSiret());
         company.setAppUser(appUser);
+        appUser.setEntreprise(company);
 
-        company = enterpriseRepository.save(company);
+        appUserRepository.save(appUser);
 
-        return company;
+        return "User Created successfully";
     }
 
+
     @Override
-    public AppUser updateAppUser(AppUser appUser) throws ResourceNotFoundException {
-        return null;
+    public AppUser updateAppUser(AppUser updatedAppUser) throws ResourceNotFoundException {
+        // Trouver l'utilisateur existant
+        AppUser existingAppUser = appUserRepository.findById(updatedAppUser.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("AppUser not found with id : " + updatedAppUser.getId()));
+
+        // Mettre à jour les informations de l'utilisateur
+        existingAppUser.setFirstName(updatedAppUser.getFirstName());
+        existingAppUser.setLastName(updatedAppUser.getLastName());
+        existingAppUser.setEmail(updatedAppUser.getEmail());
+        existingAppUser.setPhoneNumber(updatedAppUser.getPhoneNumber());
+        // Supposons que le mot de passe est déjà encodé
+        existingAppUser.setPassword(updatedAppUser.getPassword());
+
+        // Trouver l'entreprise existante
+        Entreprise existingCompany = enterpriseRepository.findById(updatedAppUser.getEntreprise().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found with id : " + updatedAppUser.getEntreprise().getId()));
+
+        // Mettre à jour les informations de l'entreprise
+        existingCompany.setName(updatedAppUser.getEntreprise().getName());
+        existingCompany.setSiret(updatedAppUser.getEntreprise().getSiret());
+        existingCompany.setAddress(updatedAppUser.getEntreprise().getAddress());
+        existingCompany.setCapitalSocial(updatedAppUser.getEntreprise().getCapitalSocial());
+        existingCompany.setFormeJuridique(updatedAppUser.getEntreprise().getFormeJuridique());
+
+        // Sauvegarder les modifications pour l'entreprise
+        enterpriseRepository.save(existingCompany);
+
+        // Sauvegarder les modifications pour l'utilisateur
+        return appUserRepository.save(existingAppUser);
     }
 }

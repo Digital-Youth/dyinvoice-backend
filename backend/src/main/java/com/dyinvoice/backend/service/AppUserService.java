@@ -15,4 +15,6 @@ public interface AppUserService {
     AppUser registerUser(RegisterForm registerForm) throws ValidationException, ResourceNotFoundException;
 
     String loginUser(LoginForm loginForm) throws ValidationException, ResourceNotFoundException;
+
+    AppUser updateAppUser(AppUserForm form) throws ValidationException, ResourceNotFoundException;
 }

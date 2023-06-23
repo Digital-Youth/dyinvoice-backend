@@ -1,9 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
-    username: ${PROD_DB_USERNAME}
-    password: ${PROD_DB_PASSWORD}
-    name: dy-invoice
-app:
-    jwtSecret: daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb
-    jwtExpirationMilliseconds: 604800000

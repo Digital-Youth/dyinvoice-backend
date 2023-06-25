@@ -104,8 +104,8 @@ public class AppUserDAOImpl implements AppUserDAO {
         }
 
         // Check if a company with this SIRET already exists
-        Entreprise existingCompany = enterpriseRepository.findBySiret(appUser.getEntreprise().getSiret());
-        if (existingCompany != null) {
+        Optional<Entreprise> existingCompany = Optional.ofNullable(enterpriseRepository.findBySiret(appUser.getEntreprise().getSiret()));
+        if (existingCompany.isPresent()) {
             throw new InvoiceApiException( "Company with this SIRET already exists");
         }
 

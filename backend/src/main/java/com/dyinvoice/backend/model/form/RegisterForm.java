@@ -36,8 +36,5 @@ public class RegisterForm {
     @ApiModelProperty(value = "AppUser Company Name.")
     private String entrepriseName;
 
-    @ApiModelProperty(value = "AppUser Company Siret.")
-    private String siret;
-
 
 }

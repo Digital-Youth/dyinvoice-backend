@@ -4,6 +4,8 @@ TODO: Create all concerning the user in the AppUserDAO
        * The Authentication User
        * The Register User
        * Change the securityConfig file and change the Role Name and affect the EntitiesRoleName
+       * Create fields Country in register. The user should choose between 5 countries Benin, Cameroon, Cote d'ivoire, Senegal and France.
+           We should verify the Siret format for each country
 
 
 TODO: Verification, validation & problems

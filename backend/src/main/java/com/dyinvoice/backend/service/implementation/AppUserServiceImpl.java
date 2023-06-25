@@ -9,7 +9,6 @@ import com.dyinvoice.backend.model.form.LoginForm;
 import com.dyinvoice.backend.model.form.RegisterForm;
 import com.dyinvoice.backend.model.validator.FormValidator;
 import com.dyinvoice.backend.model.view.AppUserView;
-import com.dyinvoice.backend.repository.AppUserRepository;
 import com.dyinvoice.backend.service.AppUserService;
 import com.dyinvoice.backend.utils.FormToEntityConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +72,26 @@ public class AppUserServiceImpl implements AppUserService {
         // Return the JWT token after successful authentication
         return appUserDAO.login(appUser);
     }
+
+    @Override
+    public AppUser updateAppUser(AppUserForm form) throws ValidationException, ResourceNotFoundException {
+        List<String> errorList = FormValidator.validateAppUserForm(form);
+        if(errorList.size() > 0) {
+            throw new ValidationException(FormValidator.getErrorMessages(errorList));
+        }
+
+        AppUser existingAppUser = appUserDAO.getAppUserById(form.getId());
+        if (existingAppUser == null) {
+            throw new ResourceNotFoundException("AppUser not found with id : " + form.getId());
+        }
+
+        // Update the AppUser and Enterprise details from the form
+        existingAppUser = FormToEntityConverter.updateAppUserFromForm(form, existingAppUser);
+        appUserDAO.updateAppUser(existingAppUser);
+
+        return existingAppUser;
+    }
+
 
 
 }

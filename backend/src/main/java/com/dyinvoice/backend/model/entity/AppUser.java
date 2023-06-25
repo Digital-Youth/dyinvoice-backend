@@ -1,6 +1,7 @@
 package com.dyinvoice.backend.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 
@@ -10,9 +11,6 @@ import java.util.Set;
 
 @Data
 @Entity
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 public class AppUser {
 
     @Id
@@ -36,7 +34,7 @@ public class AppUser {
     )
     private Set<Role> roles;
 
-
+    @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "entreprise_id")
     private Entreprise entreprise;

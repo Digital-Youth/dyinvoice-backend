@@ -12,10 +12,9 @@ public class InvoiceApiException extends RuntimeException{
         this.message = message;
     }
 
-    public InvoiceApiException(String message, HttpStatus status, String message1) {
-        super(message);
-        this.status = status;
-        this.message = message1;
+    public InvoiceApiException(String message) {
+
+        this.message = message;
     }
 
     public HttpStatus getStatus() {

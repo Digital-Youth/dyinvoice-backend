@@ -48,7 +48,6 @@ public class FormToEntityConverter {
 
         Entreprise entreprise = new Entreprise();
         entreprise.setName(registerForm.getEntrepriseName());
-        entreprise.setSiret(registerForm.getSiret());
 
         appUser.setEntreprise(entreprise);
 
@@ -62,5 +61,16 @@ public class FormToEntityConverter {
         appUser.setPassword(loginForm.getPassword());
 
         return appUser;
+    }
+
+    public static AppUser updateAppUserFromForm(AppUserForm form, AppUser existingAppUser) {
+
+        if(form.getEmail() != null) {
+            existingAppUser.setEmail(form.getEmail());
+        }
+
+        // ...
+
+        return existingAppUser;
     }
 }

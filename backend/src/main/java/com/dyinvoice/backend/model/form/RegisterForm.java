@@ -26,6 +26,9 @@ public class RegisterForm {
     @ApiModelProperty(value = "AppUser email.")
     private String email;
 
+    @ApiModelProperty(value = "AppUser country.")
+    private String country;
+
     @ApiModelProperty(value = "AppUser phoneNumber.")
     private String phoneNumber;
 

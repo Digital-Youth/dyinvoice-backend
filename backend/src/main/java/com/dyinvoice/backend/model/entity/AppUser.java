@@ -1,8 +1,6 @@
 package com.dyinvoice.backend.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -22,6 +20,8 @@ public class AppUser {
     private String lastName;
 
     private String email;
+
+    private String country;
 
     private String phoneNumber;
 

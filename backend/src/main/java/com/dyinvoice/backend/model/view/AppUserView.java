@@ -14,6 +14,8 @@ public class AppUserView {
 
     private String email;
 
+    private String country;
+
     private String phoneNumber;
 
     private String entreprise;

@@ -36,6 +36,15 @@ public class FormValidator {
             errorList.add("Invalid or null phone number.");
         }
 
+        if(form.getCountry() == null || form.getCountry().trim().isEmpty() ||
+                !(form.getCountry().equalsIgnoreCase("cameroun") ||
+                        form.getCountry().equalsIgnoreCase("benin") ||
+                        form.getCountry().equalsIgnoreCase("france") ||
+                        form.getCountry().equalsIgnoreCase("senegal") ||
+                        form.getCountry().equalsIgnoreCase("cote d'ivoire"))) {
+            errorList.add("Invalid or null country. Country must be one of: Cameroun, Benin, France, Senegal, Cote d'Ivoire");
+        }
+
 
         return errorList;
     }

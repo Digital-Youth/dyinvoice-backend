@@ -29,5 +29,11 @@ public class AppUserForm {
     @ApiModelProperty(value = "AppUser phoneNumber.")
     private String phoneNumber;
 
+    @ApiModelProperty(value = "AppUser country.")
+    private String country;
+
+    @ApiModelProperty(value = "AppUser entreprise.")
+    private Entreprise entreprise;
+
 
 }

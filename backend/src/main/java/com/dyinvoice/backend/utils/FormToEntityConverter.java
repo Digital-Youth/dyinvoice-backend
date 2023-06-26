@@ -1,13 +1,26 @@
 package com.dyinvoice.backend.utils;
 
+import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.model.entity.AppUser;
 import com.dyinvoice.backend.model.entity.Entreprise;
 import com.dyinvoice.backend.model.form.AppUserForm;
 import com.dyinvoice.backend.model.form.LoginForm;
 import com.dyinvoice.backend.model.form.RegisterForm;
+import com.dyinvoice.backend.repository.EntrepriseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
+@Component
 public class FormToEntityConverter {
+
+
+    private static EntrepriseRepository entrepriseRepository;
+
+    @Autowired
+    public FormToEntityConverter(EntrepriseRepository entrepriseRepository) {
+        this.entrepriseRepository = entrepriseRepository;
+    }
 
     public static AppUser convertFormToAppUser(AppUserForm appUserForm) {
 
@@ -43,6 +56,7 @@ public class FormToEntityConverter {
         appUser.setFirstName(registerForm.getFirstName());
         appUser.setLastName(registerForm.getLastName());
         appUser.setEmail(registerForm.getEmail());
+        appUser.setCountry(registerForm.getCountry());
         appUser.setPhoneNumber(registerForm.getPhoneNumber());
         appUser.setPassword(registerForm.getPassword());
 
@@ -63,14 +77,63 @@ public class FormToEntityConverter {
         return appUser;
     }
 
-    public static AppUser updateAppUserFromForm(AppUserForm form, AppUser existingAppUser) {
+    public static AppUser updateAppUserFromForm(AppUserForm form, AppUser existingAppUser) throws ResourceNotFoundException {
+
+        if(form.getFirstName() != null) {
+            existingAppUser.setFirstName(form.getFirstName());
+        }
+
+        if(form.getLastName()!= null) {
+            existingAppUser.setLastName(form.getLastName());
+        }
 
         if(form.getEmail() != null) {
             existingAppUser.setEmail(form.getEmail());
+        }
+
+        if(form.getPhoneNumber() != null) {
+            existingAppUser.setPhoneNumber(form.getPhoneNumber());
+        }
+
+        if(form.getCountry()!= null) {
+            existingAppUser.setCountry(form.getCountry());
+        }
+
+        if(form.getEntreprise() != null) {
+            // Récupère l'instance existante de Entreprise
+            Entreprise existingEntreprise = entrepriseRepository.findById(form.getEntreprise().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Company not found with id : " + form.getEntreprise().getId()));
+
+            // Met à jour l'entreprise avec les nouvelles informations du formulaire
+            if(form.getEntreprise().getName()!= null) {
+                existingEntreprise.setName(form.getEntreprise().getName());
+            }
+
+            if(form.getEntreprise().getCapitalSocial()!= null) {
+                existingEntreprise.setCapitalSocial(form.getEntreprise().getCapitalSocial());
+            }
+
+            if(form.getEntreprise().getAddress()!= null) {
+                existingEntreprise.setAddress(form.getEntreprise().getAddress());
+            }
+
+            if(form.getEntreprise().getSiret()!= null) {
+                existingEntreprise.setSiret(form.getEntreprise().getSiret());
+            }
+
+            if(form.getEntreprise().getFormeJuridique()!= null) {
+                existingEntreprise.setFormeJuridique(form.getEntreprise().getFormeJuridique());
+            }
+
+            // Sauvegarde les modifications de l'entreprise
+            entrepriseRepository.save(existingEntreprise);
+
+            existingAppUser.setEntreprise(existingEntreprise);
         }
 
         // ...
 
         return existingAppUser;
     }
+
 }

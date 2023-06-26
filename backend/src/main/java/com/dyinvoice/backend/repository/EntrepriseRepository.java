@@ -12,4 +12,6 @@ public interface EntrepriseRepository extends JpaRepository<Entreprise, Long> {
     Entreprise findByAppUser(AppUser appUser);
     Entreprise findBySiret(String siret);
 
+
+
 }

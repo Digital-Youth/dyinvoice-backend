@@ -23,7 +23,4 @@ public class EntrepriseView {
 
     private AppUser appUser;
 
-    private Timestamp createdAt;
-
-    private Timestamp updatedAt;
 }

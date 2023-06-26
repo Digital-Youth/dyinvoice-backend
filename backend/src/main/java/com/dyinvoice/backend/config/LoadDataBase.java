@@ -1,8 +1,10 @@
 package com.dyinvoice.backend.config;
 
 
+import com.dyinvoice.backend.model.entity.AppUser;
 import com.dyinvoice.backend.model.entity.EntitiesRoleName;
 import com.dyinvoice.backend.model.entity.Role;
+import com.dyinvoice.backend.repository.AppUserRepository;
 import com.dyinvoice.backend.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -19,7 +21,7 @@ import java.util.Optional;
 public class LoadDataBase {
 
     private RoleRepository roleRepository;
-
+    private AppUserRepository appUserRepository;
     private static final Logger log = LoggerFactory.getLogger(LoadDataBase.class);
 
     @Bean
@@ -53,7 +55,6 @@ public class LoadDataBase {
             }
 
             log.info("End");
-
 
         };
     }

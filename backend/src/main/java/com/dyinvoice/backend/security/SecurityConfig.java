@@ -63,11 +63,19 @@ public class SecurityConfig {
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
                 http.authorizeRequests()
                     .antMatchers(HttpMethod.GET, ControllerVariables.userAntPatterns).permitAll();
 
         http.authorizeRequests()
                         .antMatchers(HttpMethod.POST, ControllerVariables.userAntPatterns).permitAll();
+
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.PUT, ControllerVariables.userAntPatterns).permitAll();
+
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.DELETE, ControllerVariables.userAntPatterns).permitAll();
+
         http.authorizeRequests()
                     .antMatchers(ControllerVariables.devAntPatterns).permitAll();
 

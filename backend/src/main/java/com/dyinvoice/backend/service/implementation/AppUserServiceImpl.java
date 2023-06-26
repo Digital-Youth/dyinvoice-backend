@@ -86,7 +86,7 @@ public class AppUserServiceImpl implements AppUserService {
         }
 
         // Update the AppUser and Enterprise details from the form
-        existingAppUser = FormToEntityConverter.updateAppUserFromForm(form, existingAppUser);
+        FormToEntityConverter.updateAppUserFromForm(form, existingAppUser);
         appUserDAO.updateAppUser(existingAppUser);
 
         return existingAppUser;

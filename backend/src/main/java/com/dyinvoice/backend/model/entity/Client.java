@@ -38,4 +38,8 @@ public class Client {
     @JoinColumn(name = "facture_id")
     private Facture facture;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "entreprise_id", nullable = false)
+    private Entreprise entreprise;
+
 }

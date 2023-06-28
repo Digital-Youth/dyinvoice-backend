@@ -30,7 +30,6 @@ import javax.validation.Valid;
 public class AppUserController {
 
     private AppUserService appUserService;
-    private final AppUserServiceImpl appUserServiceImpl;
 
 
     @ApiOperation(value = "Get App user profile by ID.", response = AppUserView.class)

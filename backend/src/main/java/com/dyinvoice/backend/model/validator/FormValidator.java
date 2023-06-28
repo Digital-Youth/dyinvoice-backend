@@ -2,6 +2,7 @@ package com.dyinvoice.backend.model.validator;
 
 import com.dyinvoice.backend.exception.ExceptionType;
 import com.dyinvoice.backend.model.form.AppUserForm;
+import com.dyinvoice.backend.model.form.ClientForm;
 import com.dyinvoice.backend.model.form.LoginForm;
 import com.dyinvoice.backend.model.form.RegisterForm;
 
@@ -17,6 +18,18 @@ public class FormValidator {
         if (form.getId() == null && (form.getEmail() == null || form.getEmail().isEmpty())) {
             errorList.add("Either User ID or email is required");
         }
+        return errorList;
+    }
+
+    public static List<String> validateClientForm(ClientForm form) {
+        List<String> errorList = new ArrayList<>();
+
+
+
+        if(form.getEmail() == null || !form.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            errorList.add("Invalid or null email.");
+        }
+
         return errorList;
     }
 
@@ -63,7 +76,6 @@ public class FormValidator {
         return errorList;
     }
 
-    // This is the method that we added
     public static List<String> validateAppUserForm(AppUserForm form) {
         List<String> errorList = new ArrayList<>();
 

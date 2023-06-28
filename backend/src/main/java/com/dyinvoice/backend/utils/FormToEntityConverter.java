@@ -2,8 +2,10 @@ package com.dyinvoice.backend.utils;
 
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.model.entity.AppUser;
+import com.dyinvoice.backend.model.entity.Client;
 import com.dyinvoice.backend.model.entity.Entreprise;
 import com.dyinvoice.backend.model.form.AppUserForm;
+import com.dyinvoice.backend.model.form.ClientForm;
 import com.dyinvoice.backend.model.form.LoginForm;
 import com.dyinvoice.backend.model.form.RegisterForm;
 import com.dyinvoice.backend.repository.EntrepriseRepository;
@@ -66,6 +68,18 @@ public class FormToEntityConverter {
         appUser.setEntreprise(entreprise);
 
         return appUser;
+    }
+
+    public static Client convertClientFormToClient(ClientForm form) {
+        Client client = new Client();
+
+        client.setName(form.getName());
+        client.setEmail(form.getEmail());
+        client.setAddress(form.getAddress());
+        client.setTown(form.getTown());
+
+        return client;
+
     }
 
     public static AppUser convertLoginFormToAppUser(LoginForm loginForm) {

@@ -2,6 +2,7 @@ package com.dyinvoice.backend.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -37,6 +38,7 @@ public class AppUser {
     @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "entreprise_id")
+    @ToString.Exclude
     private Entreprise entreprise;
 
     private Timestamp createdAt;

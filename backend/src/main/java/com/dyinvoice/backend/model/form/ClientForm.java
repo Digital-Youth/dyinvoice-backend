@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class ClientForm {
 
     @ApiModelProperty(value = "Client ID.", required = true)
-    private long id;
+    private Long id;
 
     @ApiModelProperty(value = "Client name.")
     private String name;

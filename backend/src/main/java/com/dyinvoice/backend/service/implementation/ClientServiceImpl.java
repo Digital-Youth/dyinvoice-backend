@@ -58,4 +58,43 @@ public class ClientServiceImpl implements ClientService {
 
     }
 
+    @Override
+    public List<Client> getAllClients() {
+        return clientDAO.getAllClients();
+    }
+
+    @Override
+    public Client getClientById(long id) throws ResourceNotFoundException {
+        Client client = clientDAO.getClientById(id);
+        if (client == null) {
+            throw new ResourceNotFoundException("Client not found with id " + id);
+        }
+        return client;
+    }
+
+    @Override
+    public Client getClientByEmail(String email) throws ResourceNotFoundException {
+
+        Client client = clientDAO.getClientByEmail(email);
+
+        if(client == null) {
+            throw new ResourceNotFoundException("Client not found with email " + email);
+        }
+        return client;
+    }
+
+    @Override
+    public Client updateClient(Client client) throws ValidationException, ResourceNotFoundException {
+        Client updatedClient = clientDAO.updateClient(client);
+        if (updatedClient == null) {
+            throw new ValidationException("Client update failed.");
+        }
+        return updatedClient;
+    }
+
+    @Override
+    public void deleteClient(long id) {
+        clientDAO.deleteClient(id);
+    }
+
 }

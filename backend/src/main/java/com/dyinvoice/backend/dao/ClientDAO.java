@@ -18,4 +18,6 @@ public interface ClientDAO {
 
     void deleteClient(long id);
 
+    Client getClientByEmail(String email);
+
 }

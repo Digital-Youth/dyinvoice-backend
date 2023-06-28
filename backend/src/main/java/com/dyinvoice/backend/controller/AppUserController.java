@@ -52,8 +52,8 @@ public class AppUserController {
         boolean useId = false;
 
         if (authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals(EntitiesRoleName.ROLE_PREFIX + EntitiesRoleName.ROLE_ADMIN)
-                        || a.getAuthority().equals(EntitiesRoleName.ROLE_PREFIX + EntitiesRoleName.ROLE_ADMIN) )) {
+                .anyMatch(a -> a.getAuthority().equals(EntitiesRoleName.ROLE_ADMIN)
+                        || a.getAuthority().equals(EntitiesRoleName.ROLE_ADMIN) )) {
             useId = true;
         }
 

@@ -5,7 +5,9 @@ import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
 import com.dyinvoice.backend.model.entity.AppUser;
 import com.dyinvoice.backend.model.entity.EntitiesRoleName;
+import com.dyinvoice.backend.model.entity.Invitations;
 import com.dyinvoice.backend.model.form.AppUserForm;
+import com.dyinvoice.backend.model.form.InvitationForm;
 import com.dyinvoice.backend.model.form.LoginForm;
 import com.dyinvoice.backend.model.form.RegisterForm;
 import com.dyinvoice.backend.model.response.JWTLoginResponse;
@@ -16,6 +18,7 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -123,6 +126,44 @@ public class AppUserController {
         AppUser updatedUser = appUserService.updateAppUser(form);
         return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
     }
+    @ApiOperation(value = "Create Invitation.", response = String.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Validation Exception"),
+            @ApiResponse(code = 404, message = "Resource Not Found Exception"),
+            @ApiResponse(code = 500, message = "Internal Exception")
+    })
+    @PostMapping("{appUserId}/invitation/create")
+    public String createInvitation(@RequestBody InvitationForm form,  @PathVariable("appUserId") final String appUserId, Authentication authentication)
+            throws ValidationException, ResourceNotFoundException {
+
+        if(authentication == null) {
+            throw new AuthenticationCredentialsNotFoundException("User is not authenticated");
+        }
+
+        // Assume appUserId is a numerical ID, not an email
+        Long userId;
+        try {
+            userId = Long.parseLong(appUserId);
+        } catch(NumberFormatException e) {
+            throw new ValidationException("Invalid user ID: " + appUserId);
+        }
+
+        // Get the user details
+        AppUser user = appUserService.getAppUserById(userId);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found: " + appUserId);
+        }
+
+        // Update the invitation form with the user details
+        form.setId(user.getId());
+
+        return appUserService.createInvitation(form);
+    }
+
+
+
+
 
 
 }

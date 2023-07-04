@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Sending Email</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- use the font -->
+  <style>
+    @media screen and (max-width: 768px) {
+      table {
+        min-width: auto;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div bgcolor="#F8F8FA">
+  <center>
+    <table width="600" align="center">
+
+
+      <thead>
+      <tr>
+        <td align="center" cellspacing="0" cellpadding="0" bgcolor="#162351" height="10" style="margin:0px;padding:0px;background-color:#162351;height:10px"></td>
+      </tr>
+      <tr>
+        <td align="center" cellspacing="0" cellpadding="30" bgcolor="#FFFFFF" style="margin:0px;padding:30px;background-color:#ffffff">
+          <img width="120" style="display:block" src="https://ci4.googleusercontent.com/proxy/1uIqT5TYDyrCHaSZUAizRMvh4Usdndglf6EeQCy-WrdP77GszxFexn5PFhWBVw85Tt1GlCO007qtzjulIf9hHNv5z1faEMSls8MWZxJaI5Q65gTDQ4M=s0-d-e1-ft#https://tiime-static.s3.eu-west-3.amazonaws.com/tiime-logo-2020.png" alt="Logo Tiime" class="CToWUd" data-bit="iit">
+        </td>
+      </tr>
+      </thead>
+
+
+
+      <tbody>
+      <tr>
+        <td align="center" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="padding:0px 20px;background-color:#ffffff">
+          <table width="100%" align="center" style="width:100%">
+            <tbody><tr>
+              <td align="center" cellspacing="0" cellpadding="0" bgcolor="#FFF4F5" style="margin:0px;padding:20px 20px 0px;background-color:#fff4f5;border-radius:15px">
+                <font face="'Nunito', Arial, sans-serif">
+                  <p class="m_-8734321766449563374title" color="#162351" style="margin:0px;padding:0px 0px 20px;font-family:'Nunito',sans-serif;font-size:20px;line-height:26px;font-weight:800;letter-spacing:0.5px;color:#162351">
+                    Bonjour <span color="#FF7483" style="color:#ff7483"></span>
+                  </p>
+                </font>
+                <img class="m_-8734321766449563374banner CToWUd a6T" width="300" style="display:block" src="https://ci4.googleusercontent.com/proxy/Rtb28a9FmEuFQ5RAVrjd66AWaEK1eTvfq3Fzf8Ijij_gTDyZZ9yNn5EO8m5hwj-eXXs_yWPdbGzkjnzwa0tkPlZsZjF_EhjtU6p3v0CJMXMAY-r1qIlBtFgmPoEyqn8=s0-d-e1-ft#https://tiime-static.s3.eu-west-3.amazonaws.com/tiime-accounts-bienvenue.png" alt="Tiime" data-bit="iit" tabindex="0">
+                <div class="a6S" dir="ltr" style="opacity: 0.01; left: 402px; top: 301px;"><div id=":rb" class="T-I J-J5-Ji aQv T-I-ax7 L3 a5q" role="button" tabindex="0" aria-label="Télécharger la pièce jointe " jslog="91252; u014N:cOuCgd,Kr2w4b,xr6bB; 4:WyIjbXNnLWY6MTc2NDc3Njc2NjQzMDAzMTUwMiIsbnVsbCxbXV0." data-tooltip-class="a1V" data-tooltip="Télécharger">
+                  <div class="akn">
+                    <div class="aSK J-J5-Ji aYr">
+
+                    </div>
+                  </div>
+                </div>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" cellspacing="0" cellpadding="20" bgcolor="#FFFFFF" style="margin:0px;padding:20px;background-color:#ffffff">
+          <font face="'Nunito', Arial, sans-serif">
+            <p class="m_-8734321766449563374title" color="#162351" style="margin:0px;padding:20px;font-family:'Nunito',sans-serif;font-size:20px;line-height:26px;font-weight:800;letter-spacing:0.5px;color:#162351">
+              Vous avez reçu une invitation à découvrir <span class="il">invoice</span>,<br>
+              l’outil pour gérer vos dépenses professionnelles en toute simplicité <img data-emoji="😉" class="an1" alt="😉" aria-label="😉" src="https://fonts.gstatic.com/s/e/notoemoji/15.0/1f609/72.png" loading="lazy">
+            </p>
+            <a class="m_-8734321766449563374button" href="${invitationUrl}" color="#FFFFFF" bgcolor="#53DA85" style="display:inline-block;margin:0px;padding:10px 25px;font-family:'Nunito',sans-serif;font-size:18px;line-height:normal;font-weight:800;letter-spacing:0.5px;color:#ffffff;background-color:#53da85;text-decoration:none;border-radius:22px" target="_blank">
+              Démarrer sur <span class="il">Invoice</span>
+            </a>
+            <p class="m_-8734321766449563374small-p" color="#6C84A2" style="margin:0px;padding:20px 0px 0px;font-family:'Nunito',sans-serif;font-size:14px;line-height:20px;font-weight:400;letter-spacing:0.35px;color:#6c84a2">
+              Cliquez sur le bouton “Démarrer sur <span class="il">Invoice</span>” pour vous connecter automatiquement. Vous pourrez alors réinitialiser mot de passe.
+            </p>
+          </font>
+        </td>
+      </tr>
+      </tbody>
+
+
+
+      <tfoot>
+      <tr>
+        <td align="center" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="margin:0px;padding:0px 30px 30px;background-color:#ffffff">
+          <font face="'Nunito', Arial, sans-serif">
+            <p class="m_-8734321766449563374small-p" color="#6C84A2" style="margin:0px;padding:20px 0px 0px;font-family:'Nunito',sans-serif;font-size:14px;line-height:20px;font-weight:400;letter-spacing:0.35px;color:#6c84a2">
+              Si vous avez des questions, n’hésitez pas à nous contacter sur <a color="#FF7483" style="text-decoration:none;color:#ff7483;font-weight:600" href="mailto:support@jterx.com" target="_blank">support@<span class="il">jterx</span>.com</a>
+            </p>
+          </font>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" cellspacing="0" cellpadding="30" bgcolor="#162351" style="margin:0px;padding:30px;background-color:#162351">
+          <font face="'Nunito', Arial, sans-serif">
+            <p class="m_-8734321766449563374small-p" color="#FFFFFF" style="margin:0px;padding:0px 0px 10px;font-family:'Nunito',sans-serif;font-size:14px;line-height:normal;font-weight:800;letter-spacing:0.5px;color:#ffffff">
+              À très vite sur <span class="il">Invoice</span>
+            </p>
+          </font>
+          <img width="80" style="display:block" src="https://ci5.googleusercontent.com/proxy/J1h8-Ze5WlozGtQcdj71Wo3CAnPrWdH_ZJR0s8cq5jNEO_4bvEitS-lhV-2qCc_0EGQiaQGYciGMKTmDXwODEtks1yKk_yWIIuUJ5CzG3cQmEdtLlTygbvbQZj8=s0-d-e1-ft#https://tiime-static.s3.eu-west-3.amazonaws.com/tiime-logo-blanc-2020.png" alt="Logo Tiime" class="CToWUd" data-bit="iit">
+        </td>
+      </tr>
+      </tfoot>
+
+    </table>
+  </center><div class="yj6qo"></div><div class="adL">
+</div></div>
+</body>
+</html>

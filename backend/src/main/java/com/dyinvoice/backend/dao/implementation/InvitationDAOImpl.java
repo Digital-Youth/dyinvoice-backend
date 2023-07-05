@@ -113,8 +113,12 @@ public class InvitationDAOImpl implements InvitationDAO {
         String subject = "You've been invited!";
         String invitationUrl = "http://yourwebsite.com/accept-invitation?token=" + token;
 
+        String email = invitation.getEmail();
+        String name = email.substring(0, email.indexOf('@'));
+
         Context context = new Context();
         context.setVariable("invitationUrl", invitationUrl);
+        context.setVariable("guestName", name);
         String body = templateEngine.process("mail-template", context);
 
         emailSender.sendEmail(fromEmail, invitation.getEmail(), subject, body);

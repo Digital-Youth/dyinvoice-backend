@@ -1,5 +1,6 @@
 package com.dyinvoice.backend.model.view;
 
+import com.dyinvoice.backend.model.entity.Entreprise;
 import lombok.Data;
 
 @Data
@@ -13,7 +14,11 @@ public class AppUserView {
 
     private String email;
 
+    private String country;
+
     private String phoneNumber;
 
-    private String password;
+    private String entreprise;
+
+
 }

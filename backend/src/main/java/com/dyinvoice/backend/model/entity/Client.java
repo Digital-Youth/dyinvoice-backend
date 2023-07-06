@@ -1,6 +1,7 @@
 package com.dyinvoice.backend.model.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import java.sql.Timestamp;
 
 @Data
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Client {
 
     @Id
@@ -20,7 +22,7 @@ public class Client {
 
     private String phoneNumber;
 
-    private String siret_siren;
+    private String siret;
 
     private String address;
 
@@ -37,5 +39,9 @@ public class Client {
     @ManyToOne
     @JoinColumn(name = "facture_id")
     private Facture facture;
+
+    @ManyToOne
+    @JoinColumn(name = "entreprise_id", nullable = false)
+    private Entreprise entreprise;
 
 }

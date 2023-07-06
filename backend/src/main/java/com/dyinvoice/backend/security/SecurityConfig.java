@@ -2,6 +2,7 @@ package com.dyinvoice.backend.security;
 
 
 import com.dyinvoice.backend.controller.ControllerVariables;
+import com.dyinvoice.backend.model.entity.EntitiesRoleName;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 
 @Configuration
 @EnableMethodSecurity
@@ -61,19 +63,33 @@ public class SecurityConfig {
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
                 http.authorizeRequests()
-                    .antMatchers(HttpMethod.GET, "/api/**").permitAll();
+                    .antMatchers(HttpMethod.GET, ControllerVariables.userAntPatterns).permitAll();
+
+        http.authorizeRequests()
+                        .antMatchers(HttpMethod.POST, ControllerVariables.userAntPatterns).permitAll();
+
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.PUT, ControllerVariables.userAntPatterns).permitAll();
+
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.DELETE, ControllerVariables.userAntPatterns).permitAll();
 
         http.authorizeRequests()
                     .antMatchers(ControllerVariables.devAntPatterns).permitAll();
 
         http.authorizeRequests()
                 .antMatchers(ControllerVariables.userAntPatterns)
-                .hasAnyRole(new String[]{ControllerVariables.USER_ROLE_NAME, ControllerVariables.STAFF_ROLE_NAME, ControllerVariables.ADMIN_ROLE_NAME});
+                .hasAnyRole(new String[]{EntitiesRoleName.ROLE_STAFF, EntitiesRoleName.ROLE_ADMIN, EntitiesRoleName.ROLE_SUPER_ADMIN});
 
         http.authorizeRequests()
                 .antMatchers(ControllerVariables.staffAntPatterns)
-                .hasAnyRole(new String[]{ControllerVariables.STAFF_ROLE_NAME, ControllerVariables.ADMIN_ROLE_NAME});
+                .hasAnyRole(new String[]{EntitiesRoleName.ROLE_STAFF, EntitiesRoleName.ROLE_ADMIN});
+
+        http.authorizeRequests()
+                .anyRequest()
+                .authenticated();
 
         return http.build();
     }

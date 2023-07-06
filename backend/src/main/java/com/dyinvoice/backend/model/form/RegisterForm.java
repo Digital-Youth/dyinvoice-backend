@@ -1,5 +1,6 @@
 package com.dyinvoice.backend.model.form;
 
+
 import com.dyinvoice.backend.model.entity.Entreprise;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,15 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "AppUser Form.")
-public class AppUserForm {
+@ApiModel(description = "Register Form.")
+public class RegisterForm {
 
     @ApiModelProperty(value = "AppUser ID.", required = true)
-    private Long id;
+    private long id;
 
     @ApiModelProperty(value = "AppUser firstname.")
     private String firstName;
@@ -26,14 +26,18 @@ public class AppUserForm {
     @ApiModelProperty(value = "AppUser email.")
     private String email;
 
-    @ApiModelProperty(value = "AppUser phoneNumber.")
-    private String phoneNumber;
-
     @ApiModelProperty(value = "AppUser country.")
     private String country;
 
-    @ApiModelProperty(value = "AppUser entreprise.")
-    private Entreprise entreprise;
+    @ApiModelProperty(value = "AppUser phoneNumber.")
+    private String phoneNumber;
+
+    @ApiModelProperty(value = "AppUser password.")
+    private String password;
+
+    // Entreprise fields
+    @ApiModelProperty(value = "AppUser Company Name.")
+    private String entrepriseName;
 
 
 }

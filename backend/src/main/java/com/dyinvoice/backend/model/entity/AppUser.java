@@ -1,6 +1,8 @@
 package com.dyinvoice.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -12,7 +14,7 @@ public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String firstName;
 
@@ -20,12 +22,11 @@ public class AppUser {
 
     private String email;
 
+    private String country;
+
     private String phoneNumber;
 
     private String password;
-
-    @OneToOne
-    private Entreprise entreprise;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
@@ -33,6 +34,12 @@ public class AppUser {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private Set<Role> roles;
+
+    @JsonManagedReference
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "entreprise_id")
+    @ToString.Exclude
+    private Entreprise entreprise;
 
     private Timestamp createdAt;
 

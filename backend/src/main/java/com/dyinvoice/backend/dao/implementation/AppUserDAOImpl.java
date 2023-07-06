@@ -1,16 +1,16 @@
 package com.dyinvoice.backend.dao.implementation;
 
+import com.dyinvoice.backend.config.EmailSender;
 import com.dyinvoice.backend.dao.AppUserDAO;
 import com.dyinvoice.backend.exception.ExceptionType;
 import com.dyinvoice.backend.exception.InvoiceApiException;
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
-import com.dyinvoice.backend.model.entity.AppUser;
-import com.dyinvoice.backend.model.entity.EntitiesRoleName;
-import com.dyinvoice.backend.model.entity.Entreprise;
-import com.dyinvoice.backend.model.entity.Role;
+import com.dyinvoice.backend.model.entity.*;
+import com.dyinvoice.backend.model.enumaration.StaffStatus;
 import com.dyinvoice.backend.model.view.AppUserView;
 import com.dyinvoice.backend.repository.AppUserRepository;
 import com.dyinvoice.backend.repository.EntrepriseRepository;
+import com.dyinvoice.backend.repository.InvitationRepository;
 import com.dyinvoice.backend.repository.RoleRepository;
 import com.dyinvoice.backend.security.JwtTokenProvider;
 import com.dyinvoice.backend.utils.EntityToViewConverter;
@@ -23,6 +23,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -35,9 +37,10 @@ public class AppUserDAOImpl implements AppUserDAO {
     AppUserRepository appUserRepository;
     AuthenticationManager authenticationManager;
     RoleRepository roleRepository;
+    InvitationRepository invitationRepository;
     PasswordEncoder passwordEncoder;
     JwtTokenProvider jwtTokenProvider;
-
+    EmailSender emailSender;
     EntrepriseRepository enterpriseRepository;
 
     @Override
@@ -165,4 +168,8 @@ public class AppUserDAOImpl implements AppUserDAO {
         // Sauvegarder les modifications pour l'utilisateur
         return appUserRepository.save(existingAppUser);
     }
+
+
+
+
 }

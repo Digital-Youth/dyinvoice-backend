@@ -5,7 +5,9 @@ import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
 import com.dyinvoice.backend.model.entity.AppUser;
 import com.dyinvoice.backend.model.entity.EntitiesRoleName;
+import com.dyinvoice.backend.model.entity.Invitations;
 import com.dyinvoice.backend.model.form.AppUserForm;
+import com.dyinvoice.backend.model.form.InvitationForm;
 import com.dyinvoice.backend.model.form.LoginForm;
 import com.dyinvoice.backend.model.form.RegisterForm;
 import com.dyinvoice.backend.model.response.JWTLoginResponse;
@@ -16,6 +18,7 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -123,6 +126,46 @@ public class AppUserController {
         AppUser updatedUser = appUserService.updateAppUser(form);
         return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
     }
+    @ApiOperation(value = "Create Invitation.", response = String.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Validation Exception"),
+            @ApiResponse(code = 404, message = "Resource Not Found Exception"),
+            @ApiResponse(code = 500, message = "Internal Exception")
+    })
+    @PostMapping("{appUserId}/team")
+    public String createInvitation(@RequestBody InvitationForm form,  @PathVariable("appUserId") final String appUserId, Authentication authentication)
+            throws ValidationException, ResourceNotFoundException {
+
+        boolean useId = false;
+        if (authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals( EntitiesRoleName.ROLE_ADMIN)
+                        || a.getAuthority().equals(EntitiesRoleName.ROLE_ADMIN) )) {
+            useId = true;
+        }
+
+        if(useId){
+            try {
+                form.setId(Long.parseLong(appUserId));
+            } catch(NumberFormatException e) {
+                form.setEmail(appUserId); // If not a long, assume it's an email
+            }
+        } else {
+            try {
+                assert authentication != null;
+                form.setId(Long.parseLong(authentication.getName()));
+            } catch(NumberFormatException e) {
+                form.setEmail(authentication.getName()); // If not a long, assume it's an email
+            }
+        }
+
+        return appUserService.createInvitation(form);
+    }
+
+
+
+
+
 
 
 }

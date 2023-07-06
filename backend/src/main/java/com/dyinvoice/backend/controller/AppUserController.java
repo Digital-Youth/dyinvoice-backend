@@ -133,33 +133,35 @@ public class AppUserController {
             @ApiResponse(code = 404, message = "Resource Not Found Exception"),
             @ApiResponse(code = 500, message = "Internal Exception")
     })
-    @PostMapping("{appUserId}/invitation/create")
+    @PostMapping("{appUserId}/team")
     public String createInvitation(@RequestBody InvitationForm form,  @PathVariable("appUserId") final String appUserId, Authentication authentication)
             throws ValidationException, ResourceNotFoundException {
 
-        if(authentication == null) {
-            throw new AuthenticationCredentialsNotFoundException("User is not authenticated");
+        boolean useId = false;
+        if (authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals( EntitiesRoleName.ROLE_ADMIN)
+                        || a.getAuthority().equals(EntitiesRoleName.ROLE_ADMIN) )) {
+            useId = true;
         }
 
-        // Assume appUserId is a numerical ID, not an email
-        Long userId;
-        try {
-            userId = Long.parseLong(appUserId);
-        } catch(NumberFormatException e) {
-            throw new ValidationException("Invalid user ID: " + appUserId);
+        if(useId){
+            try {
+                form.setId(Long.parseLong(appUserId));
+            } catch(NumberFormatException e) {
+                form.setEmail(appUserId); // If not a long, assume it's an email
+            }
+        } else {
+            try {
+                assert authentication != null;
+                form.setId(Long.parseLong(authentication.getName()));
+            } catch(NumberFormatException e) {
+                form.setEmail(authentication.getName()); // If not a long, assume it's an email
+            }
         }
-
-        // Get the user details
-        AppUser user = appUserService.getAppUserById(userId);
-        if (user == null) {
-            throw new ResourceNotFoundException("User not found: " + appUserId);
-        }
-
-        // Update the invitation form with the user details
-        form.setId(user.getId());
 
         return appUserService.createInvitation(form);
     }
+
 
 
 

@@ -17,10 +17,18 @@ import java.util.UUID;
 @Service
 public class EmailResendService {
 
-    @Autowired
-    private InvitationRepository invitationRepository;
 
-    private InvitationDAOImpl invitationDAO;
+    private final InvitationRepository invitationRepository;
+
+    private final InvitationDAOImpl invitationDAO;
+
+    @Autowired
+    public EmailResendService(InvitationRepository invitationRepository, InvitationDAOImpl invitationDAO) {
+        this.invitationRepository = invitationRepository;
+        this.invitationDAO = invitationDAO;
+    }
+
+
 
     @Scheduled(fixedRate = 5 * 60 * 1000)
     public void resendEmails() {

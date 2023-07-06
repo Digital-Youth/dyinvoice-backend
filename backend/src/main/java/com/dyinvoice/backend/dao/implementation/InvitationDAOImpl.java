@@ -87,6 +87,8 @@ public class InvitationDAOImpl implements InvitationDAO {
             newInvitations.setEmail(savedInvitedUser.getEmail());
             newInvitations.setSenderEmail(appUser.getEmail());
             newInvitations.setExpiryDate(LocalDateTime.now().plusDays(7));
+            newInvitations.setEntreprise(appUser.getEntreprise());
+
             newInvitations.setAppUser(savedInvitedUser);
 
             Invitations savedInvitation = invitationRepository.save(newInvitations);
@@ -110,19 +112,24 @@ public class InvitationDAOImpl implements InvitationDAO {
 
     public void sendInvitation(Invitations invitation, String token) throws Exception {
         String fromEmail = environment.getProperty("spring.mail.properties.mail.smtp.from", "noreply@jterx.com");
-        String subject = "You've been invited!";
+        String linkText = "Join Your Team";
         String invitationUrl = "http://yourwebsite.com/accept-invitation?token=" + token;
 
-        String email = invitation.getEmail();
-        String name = email.substring(0, email.indexOf('@'));
+        String companyName = "unknown company";
+        if (invitation.getEntreprise() != null) {
+            companyName = invitation.getEntreprise().getName();
+        }
 
-        Context context = new Context();
-        context.setVariable("invitationUrl", invitationUrl);
-        context.setVariable("guestName", name);
-        String body = templateEngine.process("mail-template", context);
+        String subject = "Join the " + companyName +" team on Invoice!";
+        String body = "Hello from Invoices\n " +
+                " you've been invited to join " + companyName + "." + "Use the link below to set up your account and get started: <br/>"
+                + "<a href=\"" + invitationUrl + "\">" + linkText + "</a>"
+                + "<br/>After accepting the invitation, please reset your password. <br/>"
+                + "\n Thanks Invoice Team";
 
         emailSender.sendEmail(fromEmail, invitation.getEmail(), subject, body);
     }
+
 
     public void acceptInvitation(String token) throws ResourceNotFoundException {
         Optional<Invitations> invitationOpt = invitationRepository.findByToken(token);

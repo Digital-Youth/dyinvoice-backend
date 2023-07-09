@@ -5,7 +5,6 @@ import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
 import com.dyinvoice.backend.model.entity.AppUser;
 import com.dyinvoice.backend.model.entity.EntitiesRoleName;
-import com.dyinvoice.backend.model.entity.Invitations;
 import com.dyinvoice.backend.model.form.AppUserForm;
 import com.dyinvoice.backend.model.form.InvitationForm;
 import com.dyinvoice.backend.model.form.LoginForm;
@@ -13,12 +12,10 @@ import com.dyinvoice.backend.model.form.RegisterForm;
 import com.dyinvoice.backend.model.response.JWTLoginResponse;
 import com.dyinvoice.backend.model.view.AppUserView;
 import com.dyinvoice.backend.service.AppUserService;
-import com.dyinvoice.backend.service.implementation.AppUserServiceImpl;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -90,7 +87,6 @@ public class AppUserController {
         AppUser appUser = appUserService.registerUser(form);
         return ResponseEntity.status(HttpStatus.CREATED).body(appUser);
     }
-
 
 
     @ApiOperation(value = "Login User.", response = AppUserView.class)

@@ -1,10 +1,7 @@
 package com.dyinvoice.backend.utils;
 
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
-import com.dyinvoice.backend.model.entity.AppUser;
-import com.dyinvoice.backend.model.entity.Client;
-import com.dyinvoice.backend.model.entity.Entreprise;
-import com.dyinvoice.backend.model.entity.Invitations;
+import com.dyinvoice.backend.model.entity.*;
 import com.dyinvoice.backend.model.form.*;
 import com.dyinvoice.backend.repository.EntrepriseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +75,16 @@ public class FormToEntityConverter {
 
         return client;
 
+    }
+
+    public static Prestation convertPrestationFormToPrestation(PrestationForm form) {
+
+        Prestation prestation = new Prestation();
+
+        prestation.setName(form.getName());
+        prestation.setDescription(form.getDescription());
+
+        return prestation;
     }
 
     public static AppUser convertLoginFormToAppUser(LoginForm loginForm) {

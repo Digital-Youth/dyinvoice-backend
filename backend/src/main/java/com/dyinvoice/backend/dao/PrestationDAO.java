@@ -4,6 +4,7 @@ package com.dyinvoice.backend.dao;
 
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
+import com.dyinvoice.backend.model.entity.Client;
 import com.dyinvoice.backend.model.entity.Prestation;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface PrestationDAO {
     void deletePrestation(long id);
 
     Prestation getPrestationByName(String name);
+
+    Prestation getPrestationById(long id);
 }

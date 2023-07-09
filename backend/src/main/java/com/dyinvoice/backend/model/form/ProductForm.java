@@ -24,4 +24,7 @@ public class ProductForm {
 
     @ApiModelProperty(value = "Product description.")
     private double unitPrice;
+
+    @ApiModelProperty(value = "Entreprise ID.")
+    private Long entrepriseId;
 }

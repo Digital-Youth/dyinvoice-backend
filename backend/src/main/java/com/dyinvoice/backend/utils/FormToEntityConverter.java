@@ -77,6 +77,16 @@ public class FormToEntityConverter {
 
     }
 
+    public static  Product convertProductFormToProduct(ProductForm form) {
+        Product product = new Product();
+
+        product.setName(form.getName());
+        product.setDescription(form.getDescription());
+        product.setUnitPrice(form.getUnitPrice());
+
+        return product;
+    }
+
     public static Prestation convertPrestationFormToPrestation(PrestationForm form) {
 
         Prestation prestation = new Prestation();

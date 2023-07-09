@@ -18,4 +18,6 @@ public interface PrestationService {
     Prestation getPrestationByName(String name) throws ResourceNotFoundException;
     Prestation updatePrestation(Prestation prestation) throws ValidationException, ResourceNotFoundException;
     void deletePrestation(long id);
+
+    Prestation getPrestationById(long id) throws ResourceNotFoundException;
 }

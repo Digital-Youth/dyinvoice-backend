@@ -3,6 +3,7 @@ package com.dyinvoice.backend.service.implementation;
 import com.dyinvoice.backend.dao.PrestationDAO;
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
+import com.dyinvoice.backend.model.entity.Client;
 import com.dyinvoice.backend.model.entity.Entreprise;
 import com.dyinvoice.backend.model.entity.Prestation;
 import com.dyinvoice.backend.model.form.PrestationForm;
@@ -78,5 +79,14 @@ public class PrestationServiceImpl implements PrestationService {
 
         prestationDAO.deletePrestation(id);
 
+    }
+
+    @Override
+    public Prestation getPrestationById(long id) throws ResourceNotFoundException {
+        Prestation prestation = prestationDAO.getPrestationById(id);
+        if (prestation == null) {
+            throw new ResourceNotFoundException("Prestation not found with id " + id);
+        }
+        return prestation;
     }
 }

@@ -50,7 +50,7 @@ public class ClientController {
         boolean useId = false;
         if (authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals( EntitiesRoleName.ROLE_ADMIN)
-                        || a.getAuthority().equals(EntitiesRoleName.ROLE_ADMIN) )) {
+                        || a.getAuthority().equals(EntitiesRoleName.ROLE_STAFF) )) {
             useId = true;
         }
 
@@ -88,7 +88,7 @@ public class ClientController {
         boolean useId = false;
         if (authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals( EntitiesRoleName.ROLE_ADMIN)
-                        || a.getAuthority().equals(EntitiesRoleName.ROLE_ADMIN) )) {
+                        || a.getAuthority().equals(EntitiesRoleName.ROLE_STAFF) )) {
             useId = true;
         }
 
@@ -126,7 +126,8 @@ public class ClientController {
 
         boolean useId = false;
         if (authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals(EntitiesRoleName.ROLE_ADMIN))) {
+                .anyMatch(a -> a.getAuthority().equals( EntitiesRoleName.ROLE_ADMIN)
+                        || a.getAuthority().equals(EntitiesRoleName.ROLE_STAFF) )) {
             useId = true;
         }
 
@@ -196,7 +197,7 @@ public class ClientController {
         boolean useId = false;
         if (authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals( EntitiesRoleName.ROLE_ADMIN)
-                        || a.getAuthority().equals(EntitiesRoleName.ROLE_ADMIN) )) {
+                        || a.getAuthority().equals(EntitiesRoleName.ROLE_STAFF) )) {
             useId = true;
         }
 

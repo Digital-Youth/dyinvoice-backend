@@ -18,11 +18,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
+
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -64,7 +63,7 @@ public class InvitationDAOImpl implements InvitationDAO {
             AppUser invitedUser = new AppUser();
             invitedUser.setEmail(inviteeEmail);
             invitedUser.setEntreprise(appUser.getEntreprise());
-            invitedUser.setPassword(passwordEncoder.encode(randomPassword));
+            //invitedUser.setPassword(passwordEncoder.encode(randomPassword));
             invitedUser.setEnabled(false); // User is not enabled until invitation is accepted
 
             // Save the AppUser in the AppUser table
@@ -113,7 +112,7 @@ public class InvitationDAOImpl implements InvitationDAO {
     public void sendInvitation(Invitations invitation, String token) throws Exception {
         String fromEmail = environment.getProperty("spring.mail.properties.mail.smtp.from", "noreply@jterx.com");
         String linkText = "Join Your Team";
-        String invitationUrl = "http://yourwebsite.com/accept-invitation?token=" + token;
+        String invitationUrl = "http://localhost:3083/v1/user/accept-invitation?token=" + token;
 
         String companyName = "unknown company";
         if (invitation.getEntreprise() != null) {

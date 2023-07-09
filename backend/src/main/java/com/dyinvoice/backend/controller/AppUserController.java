@@ -12,17 +12,23 @@ import com.dyinvoice.backend.model.form.LoginForm;
 import com.dyinvoice.backend.model.form.RegisterForm;
 import com.dyinvoice.backend.model.response.JWTLoginResponse;
 import com.dyinvoice.backend.model.view.AppUserView;
+import com.dyinvoice.backend.repository.AppUserRepository;
+import com.dyinvoice.backend.repository.InvitationRepository;
 import com.dyinvoice.backend.service.AppUserService;
-import com.dyinvoice.backend.service.implementation.AppUserServiceImpl;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 
 @Api(value="AppUserController", description="Rest API for App User operations.")
@@ -33,7 +39,9 @@ import javax.validation.Valid;
 public class AppUserController {
 
     private AppUserService appUserService;
-
+    private InvitationRepository invitationRepository;
+    private AppUserRepository appUserRepository;
+    PasswordEncoder passwordEncoder;
 
     @ApiOperation(value = "Get App user profile by ID.", response = AppUserView.class)
     @ApiResponses(value = {
@@ -92,7 +100,6 @@ public class AppUserController {
     }
 
 
-
     @ApiOperation(value = "Login User.", response = AppUserView.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -137,6 +144,10 @@ public class AppUserController {
     public String createInvitation(@RequestBody InvitationForm form,  @PathVariable("appUserId") final String appUserId, Authentication authentication)
             throws ValidationException, ResourceNotFoundException {
 
+        if(authentication == null) {
+            throw new AccessDeniedException("Vous devez être authentifié pour accéder à cette ressource.");
+        }
+
         boolean useId = false;
         if (authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals( EntitiesRoleName.ROLE_ADMIN)
@@ -160,6 +171,43 @@ public class AppUserController {
         }
 
         return appUserService.createInvitation(form);
+    }
+
+
+    @GetMapping("/accept-invitation")
+    public String showSetPasswordPage(@RequestParam("token") String token, Model model) {
+        Optional<Invitations> invitationOpt = invitationRepository.findByToken(token);
+        if (invitationOpt.isEmpty() || invitationOpt.get().getExpiryDate().isBefore(LocalDateTime.now())) {
+            model.addAttribute("error", "Invalid or expired token");
+            return "error";
+        }
+
+        model.addAttribute("token", token);
+        return "redirect:/set-password";
+    }
+    private String generateRandomPassword() {
+        return UUID.randomUUID().toString();
+    }
+    @PostMapping("/accept-invitation")
+    public String handleSetPassword(@RequestParam("token") String token, @RequestParam("password") String password, Model model) throws ResourceNotFoundException {
+
+        String randomPassword = generateRandomPassword();
+        Optional<Invitations> invitationOpt = invitationRepository.findByToken(token);
+        if (invitationOpt.isEmpty() || invitationOpt.get().getExpiryDate().isBefore(LocalDateTime.now())) {
+            model.addAttribute("error", "Invalid or expired token");
+            return "error";
+        }
+
+        Invitations invitation = invitationOpt.get();
+        AppUser user = appUserRepository.findById(invitation.getAppUser().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        user.setPassword(passwordEncoder.encode(randomPassword));
+        appUserRepository.save(user);
+        invitationRepository.delete(invitation);
+
+        model.addAttribute("message", "Password set successfully");
+        return "login";
     }
 
 

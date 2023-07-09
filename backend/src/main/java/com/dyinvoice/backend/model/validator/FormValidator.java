@@ -21,10 +21,29 @@ public class FormValidator {
     public static List<String> validateClientForm(ClientForm form) {
         List<String> errorList = new ArrayList<>();
 
-
-
         if(form.getEmail() == null || !form.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
             errorList.add("Invalid or null email.");
+        }
+
+        return errorList;
+    }
+
+    public static List<String> validatePrestationForm(PrestationForm form) {
+        List<String> errorList = new ArrayList<>();
+
+        if(form.getName() == null || form.getName().isEmpty()){
+            errorList.add("Name is required");
+
+        }
+
+        return errorList;
+    }
+
+    public static List<String> validateProductForm(ProductForm form) {
+        List<String> errorList = new ArrayList<>();
+
+        if(form.getName() == null || form.getName().isEmpty()) {
+            errorList.add("Name is required");
         }
 
         return errorList;

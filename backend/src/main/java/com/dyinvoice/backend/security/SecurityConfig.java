@@ -69,6 +69,15 @@ public class SecurityConfig {
 
         http.authorizeRequests()
                         .antMatchers(HttpMethod.POST, ControllerVariables.userAntPatterns).permitAll();
+        http
+                .authorizeRequests()
+                .antMatchers("/v1/user/accept-invitation").permitAll()
+                .antMatchers(HttpMethod.GET, ControllerVariables.userAntPatterns).permitAll()
+                .antMatchers(HttpMethod.POST, ControllerVariables.userAntPatterns).permitAll();// Allow everyone to access /accept-invitation
+        http
+                .authorizeRequests()
+                .antMatchers("/favicon.ico").permitAll() // Add this line
+                .antMatchers(HttpMethod.GET, ControllerVariables.userAntPatterns).permitAll();
 
         http.authorizeRequests()
                 .antMatchers(HttpMethod.PUT, ControllerVariables.userAntPatterns).permitAll();

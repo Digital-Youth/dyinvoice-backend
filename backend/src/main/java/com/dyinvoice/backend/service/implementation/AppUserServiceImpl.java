@@ -1,10 +1,12 @@
 package com.dyinvoice.backend.service.implementation;
 
 import com.dyinvoice.backend.dao.AppUserDAO;
+import com.dyinvoice.backend.dao.InvitationDAO;
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
 import com.dyinvoice.backend.model.entity.AppUser;
 import com.dyinvoice.backend.model.form.AppUserForm;
+import com.dyinvoice.backend.model.form.InvitationForm;
 import com.dyinvoice.backend.model.form.LoginForm;
 import com.dyinvoice.backend.model.form.RegisterForm;
 import com.dyinvoice.backend.model.validator.FormValidator;
@@ -22,10 +24,15 @@ public class AppUserServiceImpl implements AppUserService {
 
     private AppUserDAO appUserDAO;
 
+    private InvitationDAO invitationDAO;
+
+
     @Autowired
-    public AppUserServiceImpl(AppUserDAO appUserDAO) {
+    public AppUserServiceImpl(AppUserDAO appUserDAO, InvitationDAO invitationDAO) {
         this.appUserDAO = appUserDAO;
+        this.invitationDAO = invitationDAO;
     }
+
 
     @Override
     public AppUserView getAppUserInfo(AppUserForm form) throws ValidationException, ResourceNotFoundException {
@@ -92,6 +99,29 @@ public class AppUserServiceImpl implements AppUserService {
         return existingAppUser;
     }
 
+    @Override
+    public String createInvitation(InvitationForm form) throws ResourceNotFoundException, ValidationException {
+
+        List<String> errorList = FormValidator.validateInvitationForm(form);
+        if(errorList.size() > 0) {
+            throw new ValidationException(FormValidator.getErrorMessages(errorList));
+        }
+
+        // Get the user details
+        AppUser existingAppUser = appUserDAO.getAppUserById(form.getId());
+        if (existingAppUser == null) {
+            throw new ResourceNotFoundException("AppUser not found with id : " + form.getId());
+        }
+        String inviteeEmail = form.getEmail();
+        // Create the invitation
+        return invitationDAO.createInvitation(existingAppUser, inviteeEmail);
+
+    }
+
+    @Override
+    public AppUser getAppUserById(Long id) {
+        return appUserDAO.getAppUserById(id);
+    }
 
 
 }

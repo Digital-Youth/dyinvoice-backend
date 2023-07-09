@@ -1,10 +1,7 @@
 package com.dyinvoice.backend.model.validator;
 
 import com.dyinvoice.backend.exception.ExceptionType;
-import com.dyinvoice.backend.model.form.AppUserForm;
-import com.dyinvoice.backend.model.form.ClientForm;
-import com.dyinvoice.backend.model.form.LoginForm;
-import com.dyinvoice.backend.model.form.RegisterForm;
+import com.dyinvoice.backend.model.form.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +21,29 @@ public class FormValidator {
     public static List<String> validateClientForm(ClientForm form) {
         List<String> errorList = new ArrayList<>();
 
-
-
         if(form.getEmail() == null || !form.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
             errorList.add("Invalid or null email.");
+        }
+
+        return errorList;
+    }
+
+    public static List<String> validatePrestationForm(PrestationForm form) {
+        List<String> errorList = new ArrayList<>();
+
+        if(form.getName() == null || form.getName().isEmpty()){
+            errorList.add("Name is required");
+
+        }
+
+        return errorList;
+    }
+
+    public static List<String> validateProductForm(ProductForm form) {
+        List<String> errorList = new ArrayList<>();
+
+        if(form.getName() == null || form.getName().isEmpty()) {
+            errorList.add("Name is required");
         }
 
         return errorList;
@@ -94,6 +110,22 @@ public class FormValidator {
 
 
         return errorList;
+    }
+
+    public static List<String> validateInvitationForm(InvitationForm form) {
+        List<String> errors = new ArrayList<>();
+
+        if (form.getEmail() == null || form.getEmail().isEmpty()) {
+            errors.add("Email is required");
+        } else if (!isValidEmail(form.getEmail())) {
+            errors.add("Email is not valid");
+        }
+
+        return errors;
+    }
+
+    public static boolean isValidEmail(String email) {
+        return email.contains("@");
     }
 
 

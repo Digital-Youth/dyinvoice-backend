@@ -1,11 +1,13 @@
 package com.dyinvoice.backend.model.entity;
 
+import com.dyinvoice.backend.model.enumaration.StaffStatus;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -36,13 +38,21 @@ public class AppUser {
     private Set<Role> roles;
 
     @JsonManagedReference
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "entreprise_id")
     @ToString.Exclude
     private Entreprise entreprise;
 
+    @Enumerated(EnumType.STRING)
+    private StaffStatus status;
+
     private Timestamp createdAt;
 
     private Timestamp updatedAt;
+
+    private boolean isEnabled = false;
+
+    @OneToMany(mappedBy = "appUser")
+    private List<Invitations> invitations;
 
 }

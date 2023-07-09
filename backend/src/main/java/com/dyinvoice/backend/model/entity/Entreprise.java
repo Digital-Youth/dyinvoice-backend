@@ -30,7 +30,7 @@ public class Entreprise {
     private String formeJuridique;
 
     @JsonBackReference
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "entreprise")
+    @ManyToOne(cascade = CascadeType.ALL)
     @ToString.Exclude
     private AppUser appUser;
 

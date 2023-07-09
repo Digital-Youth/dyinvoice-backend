@@ -1,13 +1,8 @@
 package com.dyinvoice.backend.utils;
 
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
-import com.dyinvoice.backend.model.entity.AppUser;
-import com.dyinvoice.backend.model.entity.Client;
-import com.dyinvoice.backend.model.entity.Entreprise;
-import com.dyinvoice.backend.model.form.AppUserForm;
-import com.dyinvoice.backend.model.form.ClientForm;
-import com.dyinvoice.backend.model.form.LoginForm;
-import com.dyinvoice.backend.model.form.RegisterForm;
+import com.dyinvoice.backend.model.entity.*;
+import com.dyinvoice.backend.model.form.*;
 import com.dyinvoice.backend.repository.EntrepriseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -82,6 +77,26 @@ public class FormToEntityConverter {
 
     }
 
+    public static  Product convertProductFormToProduct(ProductForm form) {
+        Product product = new Product();
+
+        product.setName(form.getName());
+        product.setDescription(form.getDescription());
+        product.setUnitPrice(form.getUnitPrice());
+
+        return product;
+    }
+
+    public static Prestation convertPrestationFormToPrestation(PrestationForm form) {
+
+        Prestation prestation = new Prestation();
+
+        prestation.setName(form.getName());
+        prestation.setDescription(form.getDescription());
+
+        return prestation;
+    }
+
     public static AppUser convertLoginFormToAppUser(LoginForm loginForm) {
         AppUser appUser = new AppUser();
 
@@ -89,6 +104,23 @@ public class FormToEntityConverter {
         appUser.setPassword(loginForm.getPassword());
 
         return appUser;
+    }
+
+    public static Invitations convertInvitationFormToInvitation(InvitationForm invitationForm) {
+
+        Invitations invitations = new Invitations();
+
+        invitations.setEmail(invitationForm.getEmail());
+
+        return invitations;
+    }
+
+    public static Invitations convertPasswordForm(PasswordForm passwordForm) {
+        Invitations invitations = new Invitations();
+
+        invitations.setEmail(passwordForm.getPassword());
+
+        return invitations;
     }
 
     public static AppUser updateAppUserFromForm(AppUserForm form, AppUser existingAppUser) throws ResourceNotFoundException {

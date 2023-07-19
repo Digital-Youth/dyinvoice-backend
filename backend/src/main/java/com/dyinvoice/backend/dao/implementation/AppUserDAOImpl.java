@@ -6,7 +6,6 @@ import com.dyinvoice.backend.exception.ExceptionType;
 import com.dyinvoice.backend.exception.InvoiceApiException;
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.model.entity.*;
-import com.dyinvoice.backend.model.enumaration.StaffStatus;
 import com.dyinvoice.backend.model.view.AppUserView;
 import com.dyinvoice.backend.repository.AppUserRepository;
 import com.dyinvoice.backend.repository.EntrepriseRepository;
@@ -15,7 +14,8 @@ import com.dyinvoice.backend.repository.RoleRepository;
 import com.dyinvoice.backend.security.JwtTokenProvider;
 import com.dyinvoice.backend.utils.EntityToViewConverter;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,8 +23,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -42,12 +40,21 @@ public class AppUserDAOImpl implements AppUserDAO {
     JwtTokenProvider jwtTokenProvider;
     EmailSender emailSender;
     EntrepriseRepository enterpriseRepository;
+    private static final Logger logger = LoggerFactory.getLogger(AppUserDAOImpl.class);
 
     @Override
     public boolean isUserExist(AppUser appUser) {
         Optional<AppUser> appUserEntity = appUserRepository.findById(appUser.getId());
 
         return appUserEntity.isPresent();
+    }
+
+    @Override
+    public Optional<AppUser> getUserInfo(String token) {
+
+        String email = jwtTokenProvider.getEmail(token);
+        logger.debug(email);
+        return Optional.ofNullable(appUserRepository.findByEmail(email));
     }
 
     @Override
@@ -61,7 +68,7 @@ public class AppUserDAOImpl implements AppUserDAO {
     }
 
     @Override
-    public AppUserView getAppUserInfo(AppUser appUser) throws ResourceNotFoundException {
+    public AppUserView getAppUserInfoById(AppUser appUser) throws ResourceNotFoundException {
         return EntityToViewConverter.convertEntityToAppUserView(getAppUser(appUser));
     }
 

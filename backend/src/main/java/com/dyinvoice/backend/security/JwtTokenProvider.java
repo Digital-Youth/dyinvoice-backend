@@ -26,13 +26,12 @@ public class JwtTokenProvider {
 
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationMilliseconds);
 
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS256, jwtSecret)
                 .compact();
-        return token;
     }
 
 /*
@@ -44,21 +43,22 @@ public class JwtTokenProvider {
 */
 
     // get email from Jwt token
-    public String getUsername(String token){
-        Claims claims = Jwts.parser()
+    public String getEmail(String token){
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(jwtSecret)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
-        String username = claims.getSubject();
-        return username;
+        return claims.getSubject();
     }
 
 
     // validate Jwt token
-    public boolean validateToken(String authToken){
-        try{
-            Jwts.parser()
+    public boolean validateToken(String authToken) {
+        try {
+            Jwts.parserBuilder()
                     .setSigningKey(jwtSecret)
+                    .build()
                     .parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException ex) {
@@ -71,4 +71,5 @@ public class JwtTokenProvider {
             throw new InvoiceApiException(HttpStatus.BAD_REQUEST, "JWT claims string is empty.");
         }
     }
+
 }

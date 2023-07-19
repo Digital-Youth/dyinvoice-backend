@@ -1,6 +1,7 @@
 package com.dyinvoice.backend.controller;
 
 
+import com.dyinvoice.backend.dao.implementation.ClientDAOImpl;
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
 import com.dyinvoice.backend.model.entity.AppUser;
@@ -14,9 +15,12 @@ import com.dyinvoice.backend.model.response.JWTLoginResponse;
 import com.dyinvoice.backend.model.view.AppUserView;
 import com.dyinvoice.backend.repository.AppUserRepository;
 import com.dyinvoice.backend.repository.InvitationRepository;
+import com.dyinvoice.backend.security.JwtTokenProvider;
 import com.dyinvoice.backend.service.AppUserService;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -42,6 +47,65 @@ public class AppUserController {
     private InvitationRepository invitationRepository;
     private AppUserRepository appUserRepository;
     PasswordEncoder passwordEncoder;
+    JwtTokenProvider jwtTokenProvider;
+
+    private static final Logger logger = LoggerFactory.getLogger(AppUserController.class);
+
+
+
+    @ApiOperation(value = "Get App user profile by ID.", response = AppUserView.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Validation Exception"),
+            @ApiResponse(code = 404, message = "Resource Not Found Exception"),
+            @ApiResponse(code = 500, message = "Internal Exception")
+
+    })
+
+
+    @GetMapping
+    public Optional<AppUser> getUserInfo(
+            final String appUserId,
+            Authentication authentication,
+            HttpServletRequest request) throws ValidationException, ResourceNotFoundException {
+
+        String jwtToken = request.getHeader("Authorization").substring(7);
+        logger.debug(jwtToken);
+        // Vérifier que l'utilisateur demandé est le même que l'utilisateur authentifié
+      //  String authenticatedUsername = jwtTokenProvider.getEmail(jwtToken);
+
+/*        if (!authenticatedUsername.equals(appUserId)) {
+            throw new AccessDeniedException("L'utilisateur authentifié n'a pas la permission de voir les détails d'un autre utilisateur");
+        }*/
+
+        AppUserForm form = new AppUserForm();
+        boolean useId = false;
+
+        if (authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals(EntitiesRoleName.ROLE_ADMIN)
+                        || a.getAuthority().equals(EntitiesRoleName.ROLE_ADMIN) )) {
+            useId = true;
+        }
+
+        if(useId){
+            try {
+                form.setId(Long.parseLong(appUserId));
+            } catch(NumberFormatException e) {
+                form.setEmail(appUserId); // If not a long, assume it's an email
+            }
+        } else {
+            try {
+                form.setId(Long.parseLong(authentication.getName()));
+            } catch(NumberFormatException e) {
+                form.setEmail(authentication.getName()); // If not a long, assume it's an email
+            }
+        }
+
+        return appUserService.getUserInfo(jwtToken);
+    }
+
+
+
 
     @ApiOperation(value = "Get App user profile by ID.", response = AppUserView.class)
     @ApiResponses(value = {
@@ -53,11 +117,15 @@ public class AppUserController {
     })
 
     @GetMapping(value="/{appUserId}")
-    public AppUserView getUserInfo(
+    public AppUserView getUserInfoById(
             @ApiParam(value = "AppUser ID.", name = "appUserId", required = true)
             @PathVariable("appUserId") final String appUserId,
-            Authentication authentication) throws ValidationException, ResourceNotFoundException {
+            Authentication authentication,  HttpServletRequest request) throws ValidationException, ResourceNotFoundException {
 
+        String jwtToken = request.getHeader("Authorization").substring(7);
+        logger.debug(jwtToken);
+
+        // Vérifier que l'utilisateur demandé est le même que l'utilisateur authentifié
         AppUserForm form = new AppUserForm();
 
         boolean useId = false;
@@ -82,7 +150,7 @@ public class AppUserController {
             }
         }
 
-        return appUserService.getAppUserInfo(form);
+        return appUserService.getAppUserInfoById(form);
     }
 
     @ApiOperation(value = "Register User.", response = AppUserView.class)

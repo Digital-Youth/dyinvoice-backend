@@ -19,9 +19,9 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
 
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
@@ -34,41 +34,44 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // get JWT token from http request
-        String token = getTokenFromRequest(request);
+        String requestURL = request.getRequestURI();
 
-        // validate token
-        if(StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)){
+        // Ignore token authentication for login or register requests
+        if (!requestURL.contains("/login") && !requestURL.contains("/register")) {
+            String jwtToken = getTokenFromRequest(request);
 
-            // get username from token
-            String username = jwtTokenProvider.getUsername(token);
+            if (StringUtils.hasText(jwtToken) && jwtTokenProvider.validateToken(jwtToken)) {
+                String username = jwtTokenProvider.getEmail(jwtToken);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
 
-            // load the user associated with token
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-            );
-
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private String getTokenFromRequest(HttpServletRequest request){
+
+    private String getTokenFromRequest(HttpServletRequest request) throws ServletException {
 
         String bearerToken = request.getHeader("Authorization");
 
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
-            return bearerToken.substring(7, bearerToken.length());
+        if(bearerToken == null) {
+            throw new ServletException("Authorization header is missing");
         }
 
-        return null;
+        if(!StringUtils.hasText(bearerToken)) {
+            throw new ServletException("Authorization header is empty");
+        }
+
+        if(!bearerToken.startsWith("Bearer ")) {
+            throw new ServletException("Authorization header does not start with Bearer ");
+        }
+
+        return bearerToken.substring(7, bearerToken.length());
     }
+
 }

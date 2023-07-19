@@ -27,9 +27,9 @@ public class SecurityConfig {
 
     private UserDetailsService userDetailsService;
 
-    private JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
-    private JwtAuthenticationFilter authenticationFilter;
+    private final JwtAuthenticationFilter authenticationFilter;
 
     public SecurityConfig(UserDetailsService userDetailsService,
                           JwtAuthenticationEntryPoint authenticationEntryPoint,
@@ -90,11 +90,11 @@ public class SecurityConfig {
 
         http.authorizeRequests()
                 .antMatchers(ControllerVariables.userAntPatterns)
-                .hasAnyRole(new String[]{EntitiesRoleName.ROLE_STAFF, EntitiesRoleName.ROLE_ADMIN, EntitiesRoleName.ROLE_SUPER_ADMIN});
+                .hasAnyRole(EntitiesRoleName.ROLE_STAFF, EntitiesRoleName.ROLE_ADMIN, EntitiesRoleName.ROLE_SUPER_ADMIN);
 
         http.authorizeRequests()
                 .antMatchers(ControllerVariables.staffAntPatterns)
-                .hasAnyRole(new String[]{EntitiesRoleName.ROLE_STAFF, EntitiesRoleName.ROLE_ADMIN});
+                .hasAnyRole(EntitiesRoleName.ROLE_STAFF, EntitiesRoleName.ROLE_ADMIN);
 
         http.authorizeRequests()
                 .anyRequest()

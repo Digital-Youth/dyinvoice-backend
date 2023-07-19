@@ -9,9 +9,13 @@ import com.dyinvoice.backend.model.form.LoginForm;
 import com.dyinvoice.backend.model.form.RegisterForm;
 import com.dyinvoice.backend.model.view.AppUserView;
 
+import java.util.Optional;
+
 public interface AppUserService {
 
-    AppUserView getAppUserInfo(AppUserForm form) throws ValidationException, ResourceNotFoundException;
+    AppUserView getAppUserInfoById(AppUserForm form) throws ValidationException, ResourceNotFoundException;
+
+    Optional<AppUser> getUserInfo(String token) throws ValidationException, ResourceNotFoundException;
 
     AppUser registerUser(RegisterForm registerForm) throws ValidationException, ResourceNotFoundException;
 

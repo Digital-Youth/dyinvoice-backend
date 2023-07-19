@@ -7,19 +7,26 @@ import com.dyinvoice.backend.model.entity.Client;
 import com.dyinvoice.backend.model.entity.EntitiesRoleName;
 import com.dyinvoice.backend.model.form.ClientForm;
 import com.dyinvoice.backend.model.view.ClientView;
+import com.dyinvoice.backend.security.JwtTokenProvider;
 import com.dyinvoice.backend.service.ClientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+
+
 
 @Api(value="ClientController", description="Rest API for Client operations.")
 @RestController
@@ -28,9 +35,9 @@ import java.util.List;
 @RequestMapping(value = "/v1/user")
 public class ClientController {
 
-
+    private static final Logger logger = LoggerFactory.getLogger(AppUserController.class);
     private ClientService clientService;
-
+    JwtTokenProvider jwtTokenProvider;
 
     @ApiOperation(value = "Register User.", response = ClientView.class)
     @ApiResponses(value = {
@@ -43,8 +50,18 @@ public class ClientController {
     @PostMapping("{appUserId}/client/createClient")
     public ResponseEntity<Client> createClient(@Valid @RequestBody ClientForm form,
                                                Authentication authentication,
-                                               @PathVariable("appUserId") final String appUserId
+                                               @PathVariable("appUserId") final String appUserId,
+                                               HttpServletRequest request
                                                ) throws ValidationException, ResourceNotFoundException {
+
+        String jwtToken = request.getHeader("Authorization").substring(7);
+        logger.debug(jwtToken);
+        // Vérifier que l'utilisateur demandé est le même que l'utilisateur authentifié
+          String authenticatedUsername = jwtTokenProvider.getEmail(jwtToken);
+
+       if (!authenticatedUsername.equals(appUserId)) {
+            throw new AccessDeniedException("L'utilisateur authentifié n'a pas la permission de voir les détails d'un autre utilisateur");
+        }
 
 
         boolean useId = false;

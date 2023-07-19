@@ -4,7 +4,6 @@ package com.dyinvoice.backend.dao.implementation;
 import com.dyinvoice.backend.dao.PrestationDAO;
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
-import com.dyinvoice.backend.model.entity.Client;
 import com.dyinvoice.backend.model.entity.Entreprise;
 import com.dyinvoice.backend.model.entity.Prestation;
 import com.dyinvoice.backend.repository.EntrepriseRepository;

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -35,7 +36,7 @@ public class AppUserServiceImpl implements AppUserService {
 
 
     @Override
-    public AppUserView getAppUserInfo(AppUserForm form) throws ValidationException, ResourceNotFoundException {
+    public AppUserView getAppUserInfoById(AppUserForm form) throws ValidationException, ResourceNotFoundException {
         List<String> errorList = FormValidator.validateAppUserReadForm(form);
         if(errorList.size() > 0) {
             throw new ValidationException(FormValidator.getErrorMessages(errorList));
@@ -48,7 +49,13 @@ public class AppUserServiceImpl implements AppUserService {
             appUser = appUserDAO.getAppUserByEmail(form.getEmail());
         }
 
-        return appUserDAO.getAppUserInfo(appUser);
+        return appUserDAO.getAppUserInfoById(appUser);
+    }
+
+    @Override
+    public Optional<AppUser> getUserInfo(String token) throws ValidationException, ResourceNotFoundException {
+
+        return appUserDAO.getUserInfo(token);
     }
 
 

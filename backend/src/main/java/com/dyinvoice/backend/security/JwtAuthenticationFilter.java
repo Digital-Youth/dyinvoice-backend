@@ -35,24 +35,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String requestURL = request.getRequestURI();
+        String jwtToken = null;
 
-        // Ignore token authentication for login or register requests
-        if (!requestURL.contains("/login") && !requestURL.contains("/register")) {
-            String jwtToken = getTokenFromRequest(request);
+/*        // Only attempt to get token if not on an exempted route
+        if (!requestURL.contains("/login")
+                && !requestURL.contains("/register")
+) {
 
-            if (StringUtils.hasText(jwtToken) && jwtTokenProvider.validateToken(jwtToken)) {
-                String username = jwtTokenProvider.getEmail(jwtToken);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            try {
+                jwtToken = getTokenFromRequest(request);
+            } catch (ServletException e) {
+                // Handle exception if necessary
             }
+
+        }*/
+
+        if (jwtToken != null && StringUtils.hasText(jwtToken) && jwtTokenProvider.validateToken(jwtToken)) {
+            String username = jwtTokenProvider.getEmail(jwtToken);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);
     }
+
 
 
     private String getTokenFromRequest(HttpServletRequest request) throws ServletException {

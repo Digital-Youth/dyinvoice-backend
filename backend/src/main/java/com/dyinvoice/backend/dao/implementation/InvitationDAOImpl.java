@@ -58,7 +58,7 @@ public class InvitationDAOImpl implements InvitationDAO {
     @Transactional
     public String createInvitation(AppUser appUser, String inviteeEmail) throws ResourceNotFoundException {
         try {
-            String randomPassword = generateRandomPassword();
+           // String randomPassword = generateRandomPassword();
 
             AppUser invitedUser = new AppUser();
             invitedUser.setEmail(inviteeEmail);
@@ -119,12 +119,12 @@ public class InvitationDAOImpl implements InvitationDAO {
             companyName = invitation.getEntreprise().getName();
         }
 
-        String subject = "Join the " + companyName +" team on Invoice!";
-        String body = "Hello from Invoices\n " +
+        String subject = "Join the " + companyName +" team on JTerx Invoices!";
+        String body = "Hello from JTerx Invoices\n " +
                 " you've been invited to join " + companyName + "." + "Use the link below to set up your account and get started: <br/>"
                 + "<a href=\"" + invitationUrl + "\">" + linkText + "</a>"
                 + "<br/>After accepting the invitation, please reset your password. <br/>"
-                + "\n Thanks Invoice Team";
+                + "\n Thanks JTerx Invoices Team";
 
         emailSender.sendEmail(fromEmail, invitation.getEmail(), subject, body);
     }

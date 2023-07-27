@@ -71,6 +71,7 @@ public class AppUserController {
 
         String jwtToken = request.getHeader("Authorization").substring(7);
         logger.debug(jwtToken);
+
         // Vérifier que l'utilisateur demandé est le même que l'utilisateur authentifié
       //  String authenticatedUsername = jwtTokenProvider.getEmail(jwtToken);
 

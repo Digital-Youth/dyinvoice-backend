@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String requestURL = request.getRequestURI();
         String jwtToken = null;
 
-/*        // Only attempt to get token if not on an exempted route
+       // Only attempt to get token if not on an exempted route
         if (!requestURL.contains("/login")
                 && !requestURL.contains("/register")
 ) {
@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // Handle exception if necessary
             }
 
-        }*/
+        }
 
         if (jwtToken != null && StringUtils.hasText(jwtToken) && jwtTokenProvider.validateToken(jwtToken)) {
             String username = jwtTokenProvider.getEmail(jwtToken);

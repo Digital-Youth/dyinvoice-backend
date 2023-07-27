@@ -34,13 +34,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-/*
-    private Key key(){
-        return Keys.hmacShaKeyFor(
-                Decoders.BASE64.decode(jwtSecret)
-        );
-    }
-*/
 
     // get email from Jwt token
     public String getEmail(String token){

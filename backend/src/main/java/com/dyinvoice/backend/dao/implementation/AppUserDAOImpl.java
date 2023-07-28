@@ -50,11 +50,15 @@ public class AppUserDAOImpl implements AppUserDAO {
     }
 
     @Override
-    public Optional<AppUser> getUserInfo(String token) {
+    public AppUserView getUserInfo(String token) throws ResourceNotFoundException {
 
         String email = jwtTokenProvider.getEmail(token);
         logger.debug(email);
-        return Optional.ofNullable(appUserRepository.findByEmail(email));
+        AppUser appUser = appUserRepository.findByEmail(email);
+        if (appUser == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        return EntityToViewConverter.convertEntityToAppUserView(appUser);
     }
 
     @Override

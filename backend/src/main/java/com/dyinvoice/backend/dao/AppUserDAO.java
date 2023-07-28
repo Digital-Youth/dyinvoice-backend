@@ -5,13 +5,11 @@ import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.model.entity.AppUser;
 import com.dyinvoice.backend.model.view.AppUserView;
 
-import java.util.Optional;
-
 public interface AppUserDAO {
 
     boolean isUserExist(AppUser appUser);
 
-    Optional<AppUser> getUserInfo(String token);
+    AppUserView getUserInfo(String token) throws ResourceNotFoundException;
 
     AppUser getAppUserByEmail(String email);
 

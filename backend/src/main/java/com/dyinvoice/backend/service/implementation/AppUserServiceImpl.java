@@ -53,7 +53,7 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public Optional<AppUser> getUserInfo(String token) throws ValidationException, ResourceNotFoundException {
+    public AppUserView getUserInfo(String token) throws ValidationException, ResourceNotFoundException {
 
         return appUserDAO.getUserInfo(token);
     }

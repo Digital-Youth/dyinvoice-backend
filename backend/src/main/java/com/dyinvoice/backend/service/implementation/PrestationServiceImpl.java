@@ -47,9 +47,12 @@ public class PrestationServiceImpl implements PrestationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Entreprise not found with id " + entrepriseId));
 
         Prestation prestation = FormToEntityConverter.convertPrestationFormToPrestation(form);
+
         prestation.setEntreprise(entreprise);
 
-        return prestationDAO.createPrestation(prestation);
+        prestationDAO.createPrestation(prestation);
+
+        return prestation;
     }
 
     @Override

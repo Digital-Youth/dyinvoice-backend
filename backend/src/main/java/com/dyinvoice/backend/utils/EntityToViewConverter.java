@@ -24,6 +24,7 @@ public class EntityToViewConverter {
         view.setPhoneNumber(savedAppUser.getPhoneNumber());
         view.setCountry(savedAppUser.getCountry());
         view.setEntreprise(savedAppUser.getEntreprise().getName());
+        view.setRoles(savedAppUser.getRoles());
         return view;
     }
 }

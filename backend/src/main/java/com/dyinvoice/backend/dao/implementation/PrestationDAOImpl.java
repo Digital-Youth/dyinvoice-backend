@@ -6,7 +6,6 @@ import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
 import com.dyinvoice.backend.model.entity.Entreprise;
 import com.dyinvoice.backend.model.entity.Prestation;
-import com.dyinvoice.backend.repository.EntrepriseRepository;
 import com.dyinvoice.backend.repository.PrestationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,16 +19,13 @@ import java.util.Optional;
 public class PrestationDAOImpl implements PrestationDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(PrestationDAOImpl.class);
-
     private final PrestationRepository prestationRepository;
 
-    private final EntrepriseRepository entrepriseRepository;
 
 
     @Autowired
-    public PrestationDAOImpl(PrestationRepository prestationRepository, EntrepriseRepository entrepriseRepository) {
+    public PrestationDAOImpl(PrestationRepository prestationRepository) {
         this.prestationRepository = prestationRepository;
-        this.entrepriseRepository = entrepriseRepository;
     }
 
 
@@ -38,8 +34,9 @@ public class PrestationDAOImpl implements PrestationDAO {
 
         logger.info("Check if the prestation exist");
 
-        Optional<Prestation> existingPrestation = prestationRepository.findByName(prestation.getName());
+        Entreprise entreprise = prestation.getEntreprise();
 
+        Optional<Prestation> existingPrestation = prestationRepository.findByNameAndEntreprise(entreprise.getName(), entreprise);
         if(existingPrestation.isPresent()) {
             logger.error("Prestation already exists");
 
@@ -51,7 +48,6 @@ public class PrestationDAOImpl implements PrestationDAO {
         return prestationRepository.save(prestation);
 
     }
-
 
 
     @Override

@@ -50,11 +50,15 @@ public class AppUserDAOImpl implements AppUserDAO {
     }
 
     @Override
-    public Optional<AppUser> getUserInfo(String token) {
+    public AppUserView getUserInfo(String token) throws ResourceNotFoundException {
 
         String email = jwtTokenProvider.getEmail(token);
         logger.debug(email);
-        return Optional.ofNullable(appUserRepository.findByEmail(email));
+        AppUser appUser = appUserRepository.findByEmail(email);
+        if (appUser == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        return EntityToViewConverter.convertEntityToAppUserView(appUser);
     }
 
     @Override
@@ -141,6 +145,41 @@ public class AppUserDAOImpl implements AppUserDAO {
         appUserRepository.save(appUser);
 
         return "User Created successfully";
+    }
+
+    public Long getLoggedInUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        String email;
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof org.springframework.security.core.userdetails.User) {
+            email = ((org.springframework.security.core.userdetails.User) principal).getUsername();
+        } else if (principal instanceof String) {
+            email = (String) principal;
+        } else {
+            return null;
+        }
+
+        AppUser appUser = appUserRepository.findByEmail(email);
+        return appUser != null ? appUser.getId() : null;
+    }
+
+
+    public Long getLoggedInUserEntrepriseId() {
+        Long userId = getLoggedInUserId();
+        if (userId == null) {
+            return null;
+        }
+
+        AppUser appUser = appUserRepository.findById(userId).orElse(null);
+        if (appUser == null || appUser.getEntreprise() == null) {
+            return null;
+        }
+
+        return appUser.getEntreprise().getId();
     }
 
 

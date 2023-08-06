@@ -21,7 +21,5 @@ public class PrestationForm {
     @ApiModelProperty(value = "Prestation description.")
     private String description;
 
-    @ApiModelProperty(value = "Entreprise ID.")
-    private Long entrepriseId;
 
 }

@@ -1,7 +1,5 @@
 package com.dyinvoice.backend.controller;
 
-
-import com.dyinvoice.backend.dao.implementation.ClientDAOImpl;
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
 import com.dyinvoice.backend.model.entity.AppUser;
@@ -61,10 +59,8 @@ public class AppUserController {
             @ApiResponse(code = 500, message = "Internal Exception")
 
     })
-
-
     @GetMapping
-    public Optional<AppUser> getUserInfo(
+    public AppUserView getUserInfo(
             final String appUserId,
             Authentication authentication,
             HttpServletRequest request) throws ValidationException, ResourceNotFoundException {
@@ -187,6 +183,9 @@ public class AppUserController {
         return ResponseEntity.ok(response);
     }
 
+
+
+
     @ApiOperation(value = "Update User.", response = AppUserView.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -196,12 +195,20 @@ public class AppUserController {
     })
     @PutMapping(value = "/{appUserId}")
     public ResponseEntity<AppUser> updateUser(@PathVariable("appUserId") final String appUserId,
-                                                  @Valid @RequestBody AppUserForm form)
+                                                  @Valid @RequestBody AppUserForm form,
+                                              HttpServletRequest request)
             throws ValidationException, ResourceNotFoundException {
+
+        String jwtToken = request.getHeader("Authorization").substring(7);
+        logger.debug(jwtToken);
         form.setId(Long.parseLong(appUserId));
         AppUser updatedUser = appUserService.updateAppUser(form);
         return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
     }
+
+
+
+
     @ApiOperation(value = "Create Invitation.", response = String.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),

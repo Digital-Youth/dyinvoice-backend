@@ -15,7 +15,7 @@ public interface AppUserService {
 
     AppUserView getAppUserInfoById(AppUserForm form) throws ValidationException, ResourceNotFoundException;
 
-    Optional<AppUser> getUserInfo(String token) throws ValidationException, ResourceNotFoundException;
+    AppUserView getUserInfo(String token) throws ValidationException, ResourceNotFoundException;
 
     AppUser registerUser(RegisterForm registerForm) throws ValidationException, ResourceNotFoundException;
 

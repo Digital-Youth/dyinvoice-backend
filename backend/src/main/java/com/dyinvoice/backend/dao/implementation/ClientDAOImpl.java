@@ -37,25 +37,6 @@ public class ClientDAOImpl implements ClientDAO {
             logger.error("Client already exists.");
             throw new ValidationException("Client already exists");
         }
-        //Check if entreprise exist
-        logger.info("Checking if client has an associated entreprise...");
-        if (client.getEntreprise() == null || client.getEntreprise().getId() == null) {
-            logger.error("Client must have an associated entreprise.");
-            throw new ValidationException("Client must have an associated entreprise");
-        }
-
-        // Fetch the entreprise from the database
-        logger.info("Fetching entreprise from the database...");
-        Entreprise checkEntreprise = entrepriseRepository.findById(client.getEntreprise().getId())
-
-                .orElseThrow(() ->{
-                            logger.error("Entreprise not found.");
-                            return new ResourceNotFoundException("not found");
-                        }
-                );
-
-        client.setEntreprise(checkEntreprise);
-
         logger.info("Saving client in the database...");
         return clientRepository.save(client);
 

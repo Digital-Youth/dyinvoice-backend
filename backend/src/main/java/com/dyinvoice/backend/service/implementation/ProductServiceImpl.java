@@ -1,11 +1,11 @@
 package com.dyinvoice.backend.service.implementation;
 
 
+import com.dyinvoice.backend.dao.AppUserDAO;
 import com.dyinvoice.backend.dao.ProductDAO;
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
 import com.dyinvoice.backend.model.entity.Entreprise;
-import com.dyinvoice.backend.model.entity.Prestation;
 import com.dyinvoice.backend.model.entity.Product;
 import com.dyinvoice.backend.model.form.ProductForm;
 import com.dyinvoice.backend.model.validator.FormValidator;
@@ -21,17 +21,17 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductDAO productDAO;
-
+    private final AppUserDAO appUserDAO;
     private final EntrepriseRepository entrepriseRepository;
 
 
     @Autowired
-    public ProductServiceImpl(ProductDAO productDAO, EntrepriseRepository entrepriseRepository) {
+    public ProductServiceImpl(ProductDAO productDAO, AppUserDAO appUserDAO, EntrepriseRepository entrepriseRepository) {
         this.productDAO = productDAO;
+        this.appUserDAO = appUserDAO;
         this.entrepriseRepository = entrepriseRepository;
     }
 
-    @Override
     public Product createProduct(ProductForm form) throws ValidationException, ResourceNotFoundException {
 
         List<String> errorList = FormValidator.validateProductForm(form);
@@ -39,16 +39,18 @@ public class ProductServiceImpl implements ProductService {
             throw new ValidationException(FormValidator.getErrorMessages(errorList));
         }
 
-        Entreprise entreprise = entrepriseRepository.findById(form.getEntrepriseId())
-                .orElseThrow(() -> new ResourceNotFoundException("Entreprise not found with id " + form.getEntrepriseId()));
+        Long entrepriseId = appUserDAO.getLoggedInUserEntrepriseId();
+        if (entrepriseId == null) {
+            throw new ResourceNotFoundException("Entreprise not found for the logged-in user");
+        }
+
+        Entreprise entreprise = entrepriseRepository.findById(entrepriseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Entreprise not found with id " + entrepriseId));
 
         Product product = FormToEntityConverter.convertProductFormToProduct(form);
-
         product.setEntreprise(entreprise);
 
-        productDAO.createProduct(product);
-
-        return product;
+        return productDAO.createProduct(product);
     }
 
     @Override

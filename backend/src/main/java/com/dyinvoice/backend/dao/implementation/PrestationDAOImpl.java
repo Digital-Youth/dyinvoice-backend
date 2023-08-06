@@ -46,24 +46,6 @@ public class PrestationDAOImpl implements PrestationDAO {
             throw new ValidationException("Prestation already exists");
 
         }
-        logger.info("Checking if prestation has an associated entreprise...");
-        if (prestation.getEntreprise() == null || prestation.getEntreprise().getId() == null) {
-            logger.error("Prestation must have an associated entreprise.");
-            throw new ValidationException("Prestation must have an associated entreprise");
-        }
-
-        // Fetch the entreprise from the database
-        logger.info("Fetching entreprise from the database...");
-        Entreprise checkEntreprise = entrepriseRepository.findById(prestation.getEntreprise().getId())
-
-                .orElseThrow(() ->{
-                            logger.error("Entreprise not found.");
-                            return new ResourceNotFoundException("not found");
-                        }
-                );
-
-        prestation.setEntreprise(checkEntreprise);
-
         logger.info("Saving prestation in the database...");
 
         return prestationRepository.save(prestation);

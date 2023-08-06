@@ -40,6 +40,7 @@ public class AppUserDAOImpl implements AppUserDAO {
     JwtTokenProvider jwtTokenProvider;
     EmailSender emailSender;
     EntrepriseRepository enterpriseRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(AppUserDAOImpl.class);
 
     @Override

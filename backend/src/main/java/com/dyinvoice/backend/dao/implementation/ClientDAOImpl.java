@@ -20,19 +20,21 @@ public class ClientDAOImpl implements ClientDAO {
     private static final Logger logger = LoggerFactory.getLogger(ClientDAOImpl.class);
 
     private final ClientRepository clientRepository;
-    private final EntrepriseRepository entrepriseRepository;
 
     @Autowired
-    public ClientDAOImpl(ClientRepository clientRepository, EntrepriseRepository entrepriseRepository) {
+    public ClientDAOImpl(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
-        this.entrepriseRepository = entrepriseRepository;
     }
     @Override
     public Client createClient(Client client) throws ValidationException, ResourceNotFoundException {
 
         //Check if client exist
         logger.info("Checking if client already exists...");
-        Optional<Client> existClient = clientRepository.findByEmail(client.getEmail());
+
+        Entreprise entreprise = client.getEntreprise();
+
+        Optional<Client> existClient = clientRepository.findByNameAndEntreprise(entreprise.getName(), entreprise);
+
         if (existClient.isPresent()) {
             logger.error("Client already exists.");
             throw new ValidationException("Client already exists");

@@ -1,12 +1,9 @@
 package com.dyinvoice.backend.dao.implementation;
 
 import com.dyinvoice.backend.dao.ProductDAO;
-import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
-import com.dyinvoice.backend.model.entity.Client;
 import com.dyinvoice.backend.model.entity.Entreprise;
 import com.dyinvoice.backend.model.entity.Product;
-import com.dyinvoice.backend.repository.EntrepriseRepository;
 import com.dyinvoice.backend.repository.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,25 +20,24 @@ public class ProductDAOImpl implements ProductDAO {
     private static final Logger logger = LoggerFactory.getLogger(PrestationDAOImpl.class);
 
     private final ProductRepository productRepository;
-    private final EntrepriseRepository entrepriseRepository;
 
 
     @Autowired
-    public ProductDAOImpl(ProductRepository productRepository, EntrepriseRepository entrepriseRepository) {
+    public ProductDAOImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.entrepriseRepository = entrepriseRepository;
     }
 
 
     @Override
     public Product createProduct(Product product) throws ValidationException {
-        logger.info("Check if the product exist");
+        logger.info("Check if the product exists");
 
-        Optional<Product> existingProduct = productRepository.getProductByName(product.getName());
+        Entreprise entreprise = product.getEntreprise();
+        Optional<Product> existingProduct = productRepository.findByNameAndEntreprise(product.getName(), entreprise);
 
         if (existingProduct.isPresent()) {
-            logger.error("Product already exists");
-            throw new ValidationException("Product already exist");
+            logger.error("Product already exists for the given enterprise");
+            throw new ValidationException("Product already exists for this enterprise");
         }
 
         logger.info("Saving product to database...");

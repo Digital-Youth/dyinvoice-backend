@@ -34,38 +34,17 @@ public class ProductDAOImpl implements ProductDAO {
 
 
     @Override
-    public Product createProduct(Product product) throws ValidationException, ResourceNotFoundException {
-
+    public Product createProduct(Product product) throws ValidationException {
         logger.info("Check if the product exist");
 
         Optional<Product> existingProduct = productRepository.getProductByName(product.getName());
 
         if (existingProduct.isPresent()) {
             logger.error("Product already exists");
-
             throw new ValidationException("Product already exist");
         }
 
-        logger.info("Checking if product has an associated entreprise...");
-        if(product.getEntreprise() == null || product.getEntreprise().getId() == null) {
-            logger.error("Product must have an associated entreprise");
-            throw new ValidationException("Product must have an associated entreprise");
-        }
-
-        // Fetch the entreprise from the database
-        logger.info("Fetching entreprise from the database...");
-        Entreprise checkEntreprise = entrepriseRepository.findById(product.getEntreprise().getId())
-
-                .orElseThrow(() ->{
-                            logger.error("Entreprise not found.");
-                            return new ResourceNotFoundException("not found");
-                        }
-                );
-
-        product.setEntreprise(checkEntreprise);
-
         logger.info("Saving product to database...");
-
         return productRepository.save(product);
     }
 

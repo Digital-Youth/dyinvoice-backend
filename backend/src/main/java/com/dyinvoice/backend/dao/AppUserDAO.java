@@ -26,5 +26,7 @@ public interface AppUserDAO {
     AppUser updateAppUser(AppUser appUser) throws ResourceNotFoundException;
 
 
+    Long getLoggedInUserEntrepriseId();
 
+    Long getLoggedInUserId();
 }

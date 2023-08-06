@@ -1,7 +1,5 @@
 package com.dyinvoice.backend.controller;
 
-
-import com.dyinvoice.backend.dao.implementation.ClientDAOImpl;
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
 import com.dyinvoice.backend.model.entity.AppUser;

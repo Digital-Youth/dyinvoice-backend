@@ -1,9 +1,9 @@
 package com.dyinvoice.backend.service.implementation;
 
+import com.dyinvoice.backend.dao.AppUserDAO;
 import com.dyinvoice.backend.dao.PrestationDAO;
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
-import com.dyinvoice.backend.model.entity.Client;
 import com.dyinvoice.backend.model.entity.Entreprise;
 import com.dyinvoice.backend.model.entity.Prestation;
 import com.dyinvoice.backend.model.form.PrestationForm;
@@ -22,11 +22,13 @@ public class PrestationServiceImpl implements PrestationService {
 
     private final PrestationDAO prestationDAO;
     private final EntrepriseRepository entrepriseRepository;
+    private final AppUserDAO appUserDAO;
 
     @Autowired
-    public PrestationServiceImpl(PrestationDAO prestationDAO, EntrepriseRepository entrepriseRepository) {
+    public PrestationServiceImpl(PrestationDAO prestationDAO, EntrepriseRepository entrepriseRepository, AppUserDAO appUserDAO) {
         this.prestationDAO = prestationDAO;
         this.entrepriseRepository = entrepriseRepository;
+        this.appUserDAO = appUserDAO;
     }
 
     @Override
@@ -36,16 +38,18 @@ public class PrestationServiceImpl implements PrestationService {
             throw new ValidationException(FormValidator.getErrorMessages(errorList));
         }
 
-        Entreprise entreprise = entrepriseRepository.findById(form.getEntrepriseId())
-                .orElseThrow(() -> new ResourceNotFoundException("Entreprise not found with id " + form.getEntrepriseId()));
+        Long entrepriseId = appUserDAO.getLoggedInUserEntrepriseId();
+        if (entrepriseId == null) {
+            throw new ResourceNotFoundException("Entreprise not found for the logged-in user");
+        }
+
+        Entreprise entreprise = entrepriseRepository.findById(entrepriseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Entreprise not found with id " + entrepriseId));
 
         Prestation prestation = FormToEntityConverter.convertPrestationFormToPrestation(form);
-
         prestation.setEntreprise(entreprise);
 
-        prestationDAO.createPrestation(prestation);
-
-        return prestation;
+        return prestationDAO.createPrestation(prestation);
     }
 
     @Override

@@ -1,6 +1,4 @@
 package com.dyinvoice.backend.model.form;
-
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -25,6 +23,5 @@ public class ProductForm {
     @ApiModelProperty(value = "Product description.")
     private double unitPrice;
 
-    @ApiModelProperty(value = "Entreprise ID.")
-    private Long entrepriseId;
+
 }

@@ -147,6 +147,41 @@ public class AppUserDAOImpl implements AppUserDAO {
         return "User Created successfully";
     }
 
+    public Long getLoggedInUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        String email;
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof org.springframework.security.core.userdetails.User) {
+            email = ((org.springframework.security.core.userdetails.User) principal).getUsername();
+        } else if (principal instanceof String) {
+            email = (String) principal;
+        } else {
+            return null;
+        }
+
+        AppUser appUser = appUserRepository.findByEmail(email);
+        return appUser != null ? appUser.getId() : null;
+    }
+
+
+    public Long getLoggedInUserEntrepriseId() {
+        Long userId = getLoggedInUserId();
+        if (userId == null) {
+            return null;
+        }
+
+        AppUser appUser = appUserRepository.findById(userId).orElse(null);
+        if (appUser == null || appUser.getEntreprise() == null) {
+            return null;
+        }
+
+        return appUser.getEntreprise().getId();
+    }
+
 
     @Override
     public AppUser updateAppUser(AppUser updatedAppUser) throws ResourceNotFoundException {

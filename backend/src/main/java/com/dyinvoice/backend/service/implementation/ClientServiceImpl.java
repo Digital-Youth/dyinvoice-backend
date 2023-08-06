@@ -1,9 +1,9 @@
 package com.dyinvoice.backend.service.implementation;
 
+import com.dyinvoice.backend.dao.AppUserDAO;
 import com.dyinvoice.backend.dao.ClientDAO;
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.exception.ValidationException;
-import com.dyinvoice.backend.model.entity.AppUser;
 import com.dyinvoice.backend.model.entity.Client;
 import com.dyinvoice.backend.model.entity.Entreprise;
 import com.dyinvoice.backend.model.form.ClientForm;
@@ -21,12 +21,14 @@ import java.util.List;
 @Service
 public class ClientServiceImpl implements ClientService {
 
+    private final AppUserDAO appUserDAO;
     private final ClientDAO clientDAO;
 
     private EntrepriseRepository entrepriseRepository;
 
     @Autowired
-    public ClientServiceImpl(ClientDAO clientDAO, EntrepriseRepository entrepriseRepository) {
+    public ClientServiceImpl(AppUserDAO appUserDAO, ClientDAO clientDAO, EntrepriseRepository entrepriseRepository) {
+        this.appUserDAO = appUserDAO;
         this.clientDAO = clientDAO;
         this.entrepriseRepository = entrepriseRepository;
     }
@@ -41,9 +43,14 @@ public class ClientServiceImpl implements ClientService {
             throw new ValidationException(FormValidator.getErrorMessages(errorList));
         }
 
-        // Find associated entreprise
-        Entreprise entreprise = entrepriseRepository.findById(form.getEntrepriseId())
-                .orElseThrow(() -> new ResourceNotFoundException("Entreprise not found with id " + form.getEntrepriseId()));
+        Long entrepriseId = appUserDAO.getLoggedInUserEntrepriseId();
+        if (entrepriseId == null) {
+            throw new ResourceNotFoundException("Entreprise not found for the logged-in user");
+        }
+
+        Entreprise entreprise = entrepriseRepository.findById(entrepriseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Entreprise not found with id " + entrepriseId));
+
 
         // Convert form to entity
         Client client = FormToEntityConverter.convertClientFormToClient(form);

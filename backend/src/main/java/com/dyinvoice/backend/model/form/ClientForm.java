@@ -29,9 +29,4 @@ public class ClientForm {
     @ApiModelProperty(value = "Client Town.")
     private String town;
 
-    @ApiModelProperty(value = "Entreprise ID.")
-    private Long entrepriseId;
-
-
-
 }

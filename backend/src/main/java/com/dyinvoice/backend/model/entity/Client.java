@@ -1,6 +1,7 @@
 package com.dyinvoice.backend.model.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -10,7 +11,7 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Client {
+public class Client implements BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +37,7 @@ public class Client {
 
     private Timestamp updatedAt;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "facture_id")
     private Facture facture;
@@ -43,5 +45,20 @@ public class Client {
     @ManyToOne
     @JoinColumn(name = "entreprise_id", nullable = false)
     private Entreprise entreprise;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @PrePersist
+    public void onPrePersist() {
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.updatedAt = new Timestamp(System.currentTimeMillis());
+    }
 
 }

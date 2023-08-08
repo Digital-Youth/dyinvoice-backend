@@ -2,15 +2,18 @@ package com.dyinvoice.backend.model.entity;
 
 import com.dyinvoice.backend.model.enumaration.StaffStatus;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
 public class AppUser {
 
@@ -40,7 +43,6 @@ public class AppUser {
     @JsonManagedReference
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "entreprise_id")
-    @ToString.Exclude
     private Entreprise entreprise;
 
     @Enumerated(EnumType.STRING)
@@ -53,6 +55,17 @@ public class AppUser {
     private boolean isEnabled = false;
 
     @OneToMany(mappedBy = "appUser")
+    @ToString.Exclude
     private List<Invitations> invitations;
 
+
+    @PrePersist
+    public void onPrePersist() {
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.updatedAt = new Timestamp(System.currentTimeMillis());
+    }
 }

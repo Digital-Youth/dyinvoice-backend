@@ -1,5 +1,7 @@
 package com.dyinvoice.backend.service;
 
+import com.dyinvoice.backend.exception.ResourceNotFoundException;
+import com.dyinvoice.backend.exception.ValidationException;
 import com.dyinvoice.backend.model.entity.Facture;
 import com.dyinvoice.backend.model.enumaration.FactureStatus;
 import com.dyinvoice.backend.model.form.FactureForm;
@@ -9,7 +11,7 @@ import java.util.Optional;
 
 public interface FactureService {
 
-    Facture createFacture(FactureForm form);
+    Facture createFacture(FactureForm form) throws ResourceNotFoundException, ValidationException;
 
     List<Facture> getAllFactures();
 
@@ -22,4 +24,7 @@ public interface FactureService {
     void deleteFactureById(long id);
 
     Facture updateFactureStatus(long id, FactureStatus newStatus);
+
+    void sendFactureByEmail(Facture facture) throws Exception;
+    void sendFactureByWhatsApp(Facture facture) throws Exception;
 }

@@ -1,6 +1,8 @@
 package com.dyinvoice.backend.config;
 
 
+import com.dyinvoice.backend.model.entity.Client;
+import com.dyinvoice.backend.model.entity.Facture;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,10 @@ public class EmailSender {
         helper.setSubject(subject);
         helper.setText(content, true);
         emailSender.send(mimeMessage);
+    }
+
+    public void sendFactureByEmail(Facture facture, Client client) throws Exception{
+
     }
 
 

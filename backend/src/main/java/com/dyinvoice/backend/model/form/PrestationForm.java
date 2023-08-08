@@ -21,5 +21,8 @@ public class PrestationForm {
     @ApiModelProperty(value = "Prestation description.")
     private String description;
 
+    @ApiModelProperty(value = "Prestation honorary.")
+    private int honorary;
+
 
 }

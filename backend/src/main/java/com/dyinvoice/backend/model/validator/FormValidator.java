@@ -1,6 +1,7 @@
 package com.dyinvoice.backend.model.validator;
 
 import com.dyinvoice.backend.exception.ExceptionType;
+import com.dyinvoice.backend.exception.ValidationException;
 import com.dyinvoice.backend.model.form.*;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 public class FormValidator {
 
     public static List<String> validateAppUserReadForm(AppUserForm form) {
-        List<String> errorList = new ArrayList<String>();
+        List<String> errorList = new ArrayList<>();
         if (form.getId() == null && (form.getEmail() == null || form.getEmail().isEmpty())) {
             errorList.add("Either User ID or email is required");
         }
@@ -87,6 +88,15 @@ public class FormValidator {
 
         if(form.getPassword() == null || form.getPassword().trim().isEmpty()) {
             errorList.add("Invalid or null password.");
+        }
+
+        return errorList;
+    }
+
+    public static List<String> validateFactureForm(FactureForm form) throws ValidationException {
+        List<String> errorList = new ArrayList<>();
+        if (form.getProductIds().isEmpty() && form.getPrestationIds().isEmpty()) {
+            throw new ValidationException("Au moins un produit ou une prestation doit être ajouté à la facture.");
         }
 
         return errorList;

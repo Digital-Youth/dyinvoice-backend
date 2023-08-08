@@ -2,13 +2,16 @@ package com.dyinvoice.backend.model.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 public class Entreprise {
 
@@ -27,7 +30,12 @@ public class Entreprise {
     private String formeJuridique;
 
     @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "entreprise")
+    @ToString.Exclude
+    private List<Facture> factures;
+
+    @JsonBackReference
+    @OneToOne(cascade = CascadeType.ALL)
     @ToString.Exclude
     private AppUser appUser;
 
@@ -36,6 +44,15 @@ public class Entreprise {
     private Timestamp updatedAt;
 
 
+    @PrePersist
+    public void onPrePersist() {
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.updatedAt = new Timestamp(System.currentTimeMillis());
+    }
 
 
 }

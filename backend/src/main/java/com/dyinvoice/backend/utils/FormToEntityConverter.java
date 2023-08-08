@@ -3,9 +3,16 @@ package com.dyinvoice.backend.utils;
 import com.dyinvoice.backend.exception.ResourceNotFoundException;
 import com.dyinvoice.backend.model.entity.*;
 import com.dyinvoice.backend.model.form.*;
+import com.dyinvoice.backend.repository.ClientRepository;
 import com.dyinvoice.backend.repository.EntrepriseRepository;
+import com.dyinvoice.backend.repository.PrestationRepository;
+import com.dyinvoice.backend.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -13,10 +20,16 @@ public class FormToEntityConverter {
 
 
     private static EntrepriseRepository entrepriseRepository;
+    private final ProductRepository productRepository;
+    private final PrestationRepository prestationRepository;
 
+    private final ClientRepository clientRepository;
     @Autowired
-    public FormToEntityConverter(EntrepriseRepository entrepriseRepository) {
+    public FormToEntityConverter(EntrepriseRepository entrepriseRepository, ProductRepository productRepository, PrestationRepository prestationRepository, ClientRepository clientRepository) {
         this.entrepriseRepository = entrepriseRepository;
+        this.productRepository = productRepository;
+        this.prestationRepository = prestationRepository;
+        this.clientRepository = clientRepository;
     }
 
     public static AppUser convertFormToAppUser(AppUserForm appUserForm) {
@@ -75,6 +88,72 @@ public class FormToEntityConverter {
 
         return client;
 
+    }
+
+    public Facture convertFactureFormToFacture(FactureForm form) throws ResourceNotFoundException {
+        Facture facture = new Facture();
+
+        facture.setId(form.getId());
+        facture.setNumFacture(form.getNumFacture());
+        facture.setLabel(form.getLabel());
+        facture.setDateEmission(form.getDateEmission());
+        facture.setReglement(form.getReglement());
+        facture.setTva(form.getTva());
+        facture.setMontant_ht(form.getMontant_ht());
+
+        // Converting IDs to actual entities
+        facture.setProducts(getProductsFromIds(form.getProductIds()));
+        facture.setPrestations(getPrestationsFromIds(form.getPrestationIds()));
+        facture.setClients(getClientsFromIds(form.getClientIds()));
+
+        return facture;
+    }
+
+    private Set<Product> getProductsFromIds(Set<Long> productIds) throws ResourceNotFoundException {
+        if (productIds == null || productIds.isEmpty()) {
+            return new HashSet<>(); // Retourner un Set vide si aucun produit n'est fourni.
+        }
+
+        return productIds.stream()
+                .map(productId -> {
+                    try {
+                        return productRepository.findById(productId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + productId));
+                    } catch (ResourceNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toSet());
+    }
+
+    private Set<Prestation> getPrestationsFromIds(Set<Long> prestationIds) throws ResourceNotFoundException {
+        if (prestationIds == null || prestationIds.isEmpty()) {
+            return new HashSet<>(); // Retourner un Set vide si aucune prestation n'est fournie.
+        }
+
+        return prestationIds.stream()
+                .map(prestationId -> {
+                    try {
+                        return prestationRepository.findById(prestationId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Prestation not found with id " + prestationId));
+                    } catch (ResourceNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toSet());
+    }
+
+    private Set<Client> getClientsFromIds(Set<Long> clientIds) throws ResourceNotFoundException {
+        return clientIds.stream()
+                .map(clientId -> {
+                    try {
+                        return clientRepository.findById(clientId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Client not found with id " + clientId));
+                    } catch (ResourceNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toSet());
     }
 
     public static  Product convertProductFormToProduct(ProductForm form) {

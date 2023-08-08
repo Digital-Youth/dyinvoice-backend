@@ -183,6 +183,25 @@ public class AppUserDAOImpl implements AppUserDAO {
         return appUser.getEntreprise().getId();
     }
 
+    public String getLoggedInUserPhoneNumber() {
+        Long userId = getLoggedInUserId();
+        if (userId == null) {
+            return null;
+        }
+
+        AppUser appUser = appUserRepository.findById(userId).orElse(null);
+        return appUser != null ? appUser.getPhoneNumber() : null;
+    }
+
+    public String getLoggedInUserEmail(){
+        Long userId = getLoggedInUserId();
+        if(userId == null) {
+            return null;
+        }
+
+        AppUser appUser = appUserRepository.findById(userId).orElse(null);
+        return appUser != null ? appUser.getEmail() : null;
+    }
 
     @Override
     public AppUser updateAppUser(AppUser updatedAppUser) throws ResourceNotFoundException {

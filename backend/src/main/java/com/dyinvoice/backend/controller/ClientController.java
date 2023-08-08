@@ -38,7 +38,7 @@ public class ClientController {
     private ClientService clientService;
     JwtTokenProvider jwtTokenProvider;
 
-    @ApiOperation(value = "Register User.", response = ClientView.class)
+    @ApiOperation(value = "Register Client.", response = ClientView.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "Validation Exception"),

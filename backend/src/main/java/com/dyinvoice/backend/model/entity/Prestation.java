@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class Prestation {
+public class Prestation implements BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,7 +15,14 @@ public class Prestation {
 
     private String description;
 
+    private int honorary;
+
     @ManyToOne
     @JoinColumn(name = "entreprise_id", nullable = false)
     private Entreprise entreprise;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
 }

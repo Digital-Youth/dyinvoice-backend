@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class Product {
+public class Product implements BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +23,11 @@ public class Product {
     @JoinColumn(name = "entreprise_id", nullable = false)
     private Entreprise entreprise;
 
+
+    @Override
+    public Long getId() {
+        return id;
+    }
 
 
 }

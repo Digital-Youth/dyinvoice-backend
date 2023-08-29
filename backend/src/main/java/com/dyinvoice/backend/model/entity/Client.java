@@ -37,7 +37,7 @@ public class Client implements BaseEntity{
 
     private Timestamp updatedAt;
 
-    @JsonBackReference
+    @JsonBackReference("facture-client")
     @ManyToOne
     @JoinColumn(name = "facture_id")
     private Facture facture;

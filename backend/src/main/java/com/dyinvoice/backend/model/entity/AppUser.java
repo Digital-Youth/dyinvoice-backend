@@ -40,7 +40,7 @@ public class AppUser {
     )
     private Set<Role> roles;
 
-    @JsonManagedReference
+    @JsonManagedReference("appUser-entreprise")
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "entreprise_id")
     private Entreprise entreprise;

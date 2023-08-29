@@ -37,9 +37,7 @@ public class EmailSender {
         emailSender.send(mimeMessage);
     }
 
-    public void sendFactureByEmail(Facture facture, Client client) throws Exception{
 
-    }
 
 
 

@@ -35,7 +35,7 @@ public class Facture {
 
     private String note;
 
-    @JsonManagedReference
+    @JsonManagedReference("facture-client")
     @OneToMany(mappedBy = "facture")
     private Set<Client> clients;
 

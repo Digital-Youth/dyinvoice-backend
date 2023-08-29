@@ -34,7 +34,7 @@ public class Entreprise {
     @ToString.Exclude
     private List<Facture> factures;
 
-    @JsonBackReference
+    @JsonBackReference("appUser-entreprise")
     @OneToOne(cascade = CascadeType.ALL)
     @ToString.Exclude
     private AppUser appUser;
